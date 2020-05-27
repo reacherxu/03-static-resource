@@ -89,6 +89,10 @@ public class StreamUtils {
     public void testMap() {
         List<Person> persons =
                 Arrays.asList(new Person("Max", 18), new Person("Peter", 23), new Person("Pamela", 23), new Person("David", 12));
+
+        List<String> nameList = persons.stream().map(Person::getName).collect(Collectors.toList());
+        System.out.println("names are " + nameList);
+
         List<Person> filterdList = persons.stream().filter(person -> person.getName().startsWith("P")).collect(Collectors.toList());
         System.out.println(filterdList);
 
