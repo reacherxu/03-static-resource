@@ -18,6 +18,12 @@
 	</properties>
 
 	<dependencies>
+		<!-- Actuator -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
+		</dependency>
+
 		<!-- https://mvnrepository.com/artifact/org.apache.commons/commons-collections4 
 			CollectionUtils -->
 		<dependency>
