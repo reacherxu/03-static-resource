@@ -27,7 +27,7 @@ public class OuterClass2 {
              * 静态内部类只能访问外围类的静态成员变量和方法
              * 不能访问外围类的非静态成员变量和方法
              */
-            System.out.println("OutClass name :" + name);
+            System.out.println(String.format("OutClass name : %s", name));
         }
     }
 
@@ -40,7 +40,7 @@ public class OuterClass2 {
 
         /* 非静态内部类中可以调用外围类的任何成员,不管是静态的还是非静态的 */
         public void display() {
-            System.out.println("OuterClass name：" + name);
+            System.out.println(String.format("OuterClass name：%s, sex: %s", name, sex));
         }
     }
 

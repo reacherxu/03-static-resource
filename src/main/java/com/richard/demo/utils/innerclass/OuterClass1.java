@@ -5,7 +5,8 @@
 package com.richard.demo.utils.innerclass;
 
 /**
- *
+ * 内部类的
+ * 
  * @author richard.xu03@sap.com
  * @version $Id: OuterClass1.java, v 0.1 Oct 15, 2020 3:55:21 PM richard.xu Exp $
  */
@@ -18,7 +19,7 @@ public class OuterClass1 {
 
     /**
      * 第一：成员内部类中不能存在任何static的变量和方法；
-     * 第二：成员内部类是依附于外围类的，所以只有先创建了外围类才能够创建内部类。
+     * 第试用二：成员内部类是依附于外围类的，所以只有先创建了外围类才能够创建内部类。
      */
     public class InnerClass {
         public void innerDisplay() {
