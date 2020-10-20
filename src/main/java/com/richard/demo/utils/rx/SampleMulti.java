@@ -54,14 +54,13 @@ public class SampleMulti {
         System.out.println(sucessList);
 
         // if error , the item will be ignored , so only 4 items returned.
-        // List<Integer> sucessList2 = Observable.from(inputList)
-        // .flatMap(
-        // value -> getNumberedObservable(value).subscribeOn(Schedulers.io())
-        // .doOnError(e -> System.out.println("failed " + value + " " + e))
-        // .onErrorResumeNext(response -> Observable.<Integer>empty()))
-        // .toList().toBlocking().single();
-        //
-        // System.out.println(sucessList2);
+        List<Integer> sucessList2 = Observable.from(inputList)
+                .flatMap(value -> getNumberedObservable(value).subscribeOn(Schedulers.io())
+                        .doOnError(e -> System.out.println("failed " + value + " " + e))
+                        .onErrorResumeNext(response -> Observable.<Integer>empty()))
+                .toList().toBlocking().single();
+
+        System.out.println(sucessList2);
     }
 
 }
