@@ -9,10 +9,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 import java.util.stream.Stream;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
+import rx.Observable;
+import rx.functions.Func1;
 
 /**
  *
@@ -29,6 +30,29 @@ public class StreamUtils {
 
         List<Integer> numbers = Arrays.asList(3, 2, 2, 3, 7, 3, 5);
         System.out.println("numbers : " + numbers);
+
+        // stream 自定义函数的练习
+        // 自定义函数
+        List<Double> list2 = Observable.from(new Integer[] {1, 2, 3, 4, 5, 6}).filter(new Func1<Integer, Boolean>() {
+            @Override
+            public Boolean call(Integer num) {
+                return num % 2 == 1;
+            }
+        }).map(new Func1<Integer, Double>() {
+            @Override
+            public Double call(Integer num) {
+                return Math.sqrt(num);
+            }
+        }).toList().toBlocking().single();
+        System.out.println("list2 是" + list2);
+
+        // lambda 的简易写法
+        List<Double> list3 = Observable.from(new Integer[] {1, 2, 3, 4, 5, 6}).filter(num -> {
+            return num % 2 == 1;
+        }).map(num -> {
+            return Math.sqrt(num);
+        }).toList().toBlocking().single();
+        System.out.println("list3 是" + list3);
 
         List<Integer> copyIntegers = numbers.stream().map(i -> i * i).collect(Collectors.toList());
         System.out.println("copyIntegers : " + copyIntegers);
@@ -85,6 +109,10 @@ public class StreamUtils {
         Stream.of("abc", "", "bc", "efg", "abcd", "", "jkl").filter(str -> StringUtils.isNotBlank(str)).forEach(System.out::println);
     }
 
+    /**
+     * map为一对一变换。
+     * 一个对象 -> 另一个对象 or 一个数组 -> 另一个数组。
+     */
     @Test
     public void testMap() {
         List<Person> persons =
@@ -113,21 +141,72 @@ public class StreamUtils {
 
     @Test
     public void testFlatMap() {
-        List<Foo> foos = new ArrayList<>();
-
         // create foos
-        IntStream.range(1, 4).forEach(i -> foos.add(new Foo("Foo" + i)));
-
+        Customer sheridan = new Customer("Sheridan");
+        Customer ivanova = new Customer("Ivanova");
+        Customer garibaldi = new Customer("Garibaldi");
         // create bars
-        foos.forEach(f -> IntStream.range(1, 4).forEach(i -> f.bars.add(new Bar("Bar" + i + " <- " + f.name))));
+        sheridan.addOrder(new Order(1)).addOrder(new Order(2)).addOrder(new Order(3));
+        ivanova.addOrder(new Order(4)).addOrder(new Order(5));
 
         // FlatMap接受一个函数，该函数必须返回对象stream。
-        foos.stream().flatMap(foo -> foo.bars.stream()).forEach(b -> System.out.println(b.name));
-
+        // 方法1 用lambda 方式
+        List<Customer> customers = Arrays.asList(sheridan, ivanova, garibaldi);
+        customers.stream().flatMap(customer -> customer.getOrders().stream()).forEach(order -> {
+            System.out.println(order.getId());
+        });
+        
+        // 方法2 用匿名函数的方式
+        // 与 flatMap 方法有关的两个重要概念应予注意：
+        // 1.方法参数 Function 产生一个输出值流；
+        // 2.生成的元素被“展平”为一个新的流。
+        // 这样解决了两层for循环的代码
+        Observable.from(customers).flatMap(new Func1<Customer, Observable<Order>>() {
+            @Override
+            public Observable<Order> call(Customer customer) {
+                return Observable.from(customer.getOrders());
+            }
+        }).forEach(order -> {
+            System.out.println(order.getId());
+        });
     }
 }
 
 
+class Customer {
+    private String name;
+    private List<Order> orders = new ArrayList<>();
+
+    public Customer(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public List<Order> getOrders() {
+        return orders;
+    }
+
+    public Customer addOrder(Order order) {
+        orders.add(order);
+        return this;
+    }
+}
+
+
+class Order {
+    private int id;
+
+    public Order(int id) {
+        this.id = id;
+    }
+
+    public int getId() {
+        return id;
+    }
+}
 class Person {
     String name;
     int age;
@@ -176,24 +255,5 @@ class Person {
     @Override
     public String toString() {
         return name;
-    }
-}
-
-
-class Foo {
-    String name;
-    List<Bar> bars = new ArrayList<>();
-
-    Foo(String name) {
-        this.name = name;
-    }
-}
-
-
-class Bar {
-    String name;
-
-    Bar(String name) {
-        this.name = name;
     }
 }
