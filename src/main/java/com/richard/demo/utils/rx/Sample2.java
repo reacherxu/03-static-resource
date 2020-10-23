@@ -79,6 +79,7 @@ public class Sample2 {
         System.out.println(list2);
     }
 
+    @SuppressWarnings({"unused", "unchecked", "rawtypes"})
     @Test
     public void testAction() {
         // 1.先创建 Action* 的对象，这里创建了三个 Action* 对象
@@ -112,6 +113,7 @@ public class Sample2 {
         integerObservable.subscribe(onNextAction, onErrorAction, onCompletedAction);
     }
 
+    @SuppressWarnings({"deprecation"})
     @Test
     public void test04() {
         System.out.println("Main Thread -> " + Thread.currentThread().getId());
@@ -193,6 +195,7 @@ public class Sample2 {
      * 一旦 Observable 不再发出 items，它将会调用 Subscriber.onCompleted() 方法，或如果有一个出错的话 Observable 会调用
      * Subscriber.onError() 方法。
      */
+    @SuppressWarnings({"unused", "rawtypes", "deprecation", "unchecked"})
     private static void test01() {
         // Observable 发出了整数 1，2，3 然后结束了
         Observable integerObservable = Observable.create(new Observable.OnSubscribe<Subscriber>() {

@@ -28,6 +28,11 @@ import javax.servlet.http.HttpServletResponse;
 public class FirstServlet extends HttpServlet {
 
     /**
+     * 
+     */
+    private static final long serialVersionUID = 6076743840108175772L;
+
+    /**
      * @see javax.servlet.http.HttpServlet#doGet(javax.servlet.http.HttpServletRequest,
      *      javax.servlet.http.HttpServletResponse)
      */
