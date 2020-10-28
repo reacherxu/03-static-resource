@@ -23,9 +23,15 @@ public class OptionalUtil {
         OptionalPerson person = new OptionalPerson();
         OptionalCar ocar = new OptionalCar();
         person.setCar(ocar);
+        // non-compliant, not suggested
         String brand = Optional.ofNullable(person).map(p -> p.getCar()).map(car -> car.getWheel()).map(wheel -> wheel.getBrand())
                 .orElse("no wheel");
         System.out.println(brand);
+
+        // compliant solution, suggested
+        String brandNew = Optional.ofNullable(person).map(OptionalPerson::getCar).map(OptionalCar::getWheel).map(OptionalWheel::getBrand)
+                .orElse("no wheel");
+        System.out.println(brandNew);
 
         OptionalWheel owheel = new OptionalWheel();
         owheel.setBrand("Nike");
