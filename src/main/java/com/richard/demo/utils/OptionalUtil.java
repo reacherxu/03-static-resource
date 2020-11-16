@@ -4,9 +4,13 @@
  */
 package com.richard.demo.utils;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import org.junit.Test;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  *
@@ -16,7 +20,7 @@ import lombok.Data;
 public class OptionalUtil {
 
     /**
-     * 用optional 解决NPE 问题
+     * 用optional.map 解决NPE 问题
      */
     @Test
     public void testNPE() {
@@ -40,8 +44,63 @@ public class OptionalUtil {
                 .orElse("no wheel");
         System.out.println(brand);
     }
+
+    /**
+     * Optional 的正确使用方式
+     */
+    @Test
+    public void testNullObject() {
+        // 1. 存在才对它做点什么
+        User king = new User(1, "king");
+        Optional<User> userOpt = Optional.of(king);
+        userOpt.ifPresent(user -> {
+            System.out.println(user.getName());
+        });
+        // filter()方法接受参数为Predicate对象，用于对Optional对象进行过滤，如果符合Predicate的条件，返回Optional对象本身，否则返回一个空的Optional对象
+        userOpt.filter(user -> user.getName().equals("king")).ifPresent(user -> {
+            System.out.println(user.getName());
+        });
+
+        // 而不要下边这样
+        if (userOpt.isPresent()) {
+            System.out.println(userOpt.get());
+        }
+    }
+
+    public User getUser(User user) {
+        // 1.存在即返回, 无则提供默认值
+        Optional<User> userOpt = Optional.ofNullable(user);
+        // return userOpt.orElse(null);
+
+        // 2.或者用这种方式，存在即返回, 无则由函数来产生
+        return userOpt.orElseGet(() -> getAnotherUser("test"));
+    }
+
+    /**
+     * Optional循环遍历集合
+     */
+    @Test
+    public void testNullCollection() {
+        List<String> list = null;
+        Optional.ofNullable(list).orElse(new ArrayList<String>()).forEach(element -> {
+            System.out.println(element);
+        });
+    }
+
+    public User getAnotherUser(String name) {
+        return new User(0, name);
+    }
+
 }
 
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+class User {
+    private int id;
+    private String name;
+}
 
 @Data
 class OptionalWheel {
