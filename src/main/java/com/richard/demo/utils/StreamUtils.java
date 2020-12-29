@@ -12,6 +12,9 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
+import org.springframework.beans.BeanUtils;
+import lombok.Data;
+import lombok.ToString;
 import rx.Observable;
 import rx.functions.Func1;
 
@@ -21,6 +24,14 @@ import rx.functions.Func1;
  * @version $Id: StreamUtils.java, v 0.1 Aug 11, 2019 6:24:50 PM richard.xu Exp $
  */
 public class StreamUtils {
+    @Test
+    public void testIsSameList() {
+        List<String> list1 = Arrays.asList("a", "b", "1");
+        List<String> list2 = Arrays.asList("a", "1", "b");
+        System.out.println(
+                list1.stream().sorted().collect(Collectors.joining()).equals(list2.stream().sorted().collect(Collectors.joining())));
+
+    }
 
     /**
      * Stream 的基本使用
@@ -140,6 +151,17 @@ public class StreamUtils {
     }
 
     @Test
+    public void testBeanUtils() {
+        Customer sheridan = new Customer("Sheridan");
+        sheridan.setProperty1("pp1");
+        sheridan.addOrder(new Order(1)).addOrder(new Order(2)).addOrder(new Order(3));
+
+        Customer customer2 = new Customer("aa");
+        BeanUtils.copyProperties(sheridan, customer2);
+        System.out.println(customer2);
+    }
+
+    @Test
     public void testFlatMap() {
         // create foos
         Customer sheridan = new Customer("Sheridan");
@@ -173,20 +195,15 @@ public class StreamUtils {
 }
 
 
+@ToString
+@Data
 class Customer {
     private String name;
+    private String property1;
     private List<Order> orders = new ArrayList<>();
 
     public Customer(String name) {
         this.name = name;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public List<Order> getOrders() {
-        return orders;
     }
 
     public Customer addOrder(Order order) {
@@ -196,6 +213,7 @@ class Customer {
 }
 
 
+@ToString
 class Order {
     private int id;
 

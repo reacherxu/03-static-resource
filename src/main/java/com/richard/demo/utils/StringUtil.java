@@ -1,6 +1,8 @@
 package com.richard.demo.utils;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.apache.commons.lang3.StringUtils;
@@ -23,6 +25,8 @@ public class StringUtil {
         Assert.assertFalse(StringUtils.equals("abc", null));
         Assert.assertTrue(StringUtils.equals("abc", "abc"));
         Assert.assertFalse(StringUtils.equals("abc", "ABC"));
+
+        System.out.println(StringUtils.join("a", "_", "c"));
 	}
 	
 	@Test
@@ -47,4 +51,18 @@ public class StringUtil {
 		String info = String.format("%s : %s","time",new Date());
 		System.out.println(info);
 	}
+
+    @Test
+    public void testJoin() {
+        List<String> list = new ArrayList<String>();
+        System.out.println(StringUtils.join(list, ","));
+
+        list.add("anny");
+        list.add("zhangsan");
+        list.add("lisi");
+        list.add("wangwu");
+        System.out.println(StringUtils.join(list, ","));
+
+    }
+
 }
