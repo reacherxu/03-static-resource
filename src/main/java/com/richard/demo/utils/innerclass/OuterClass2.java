@@ -4,12 +4,15 @@
  */
 package com.richard.demo.utils.innerclass;
 
+import java.io.Serializable;
+
 /**
  *
  * @author richard.xu03@sap.com
  * @version $Id: OuterClass2.java, v 0.1 Oct 15, 2020 4:07:38 PM richard.xu Exp $
  */
-public class OuterClass2 {
+public class OuterClass2 implements Serializable {
+    private static final long serialVersionUID = 6653463866995540628L;
     private String sex = "male";
     public static String name = "chenssy";
 
@@ -27,7 +30,7 @@ public class OuterClass2 {
              * 静态内部类只能访问外围类的静态成员变量和方法
              * 不能访问外围类的非静态成员变量和方法
              */
-            System.out.println(String.format("OutClass name : %s", name));
+            System.out.printf("OutClass name : %s%n", name);
         }
     }
 

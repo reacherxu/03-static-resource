@@ -1,8 +1,6 @@
-/**
- * SAP Inc.
- * Copyright (c) 1972-2020 All Rights Reserved.
- */
 package com.richard.demo.utils.innerclass;
+
+import java.io.Serializable;
 
 /**
  * 内部类的
@@ -10,7 +8,8 @@ package com.richard.demo.utils.innerclass;
  * @author richard.xu03@sap.com
  * @version $Id: OuterClass1.java, v 0.1 Oct 15, 2020 3:55:21 PM richard.xu Exp $
  */
-public class OuterClass1 {
+public class OuterClass1 implements Serializable {
+    private static final long serialVersionUID = 3372145258072057247L;
     private String str;
 
     public void outerDisplay() {
