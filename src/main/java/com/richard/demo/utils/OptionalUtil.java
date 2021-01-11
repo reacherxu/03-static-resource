@@ -7,6 +7,9 @@ package com.richard.demo.utils;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import lombok.experimental.Accessors;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -17,6 +20,7 @@ import lombok.NoArgsConstructor;
  * @author richard.xu03@sap.com
  * @version $Id: OptionalUtil.java, v 0.1 Jun 7, 2020 9:13:23 AM richard.xu Exp $
  */
+@Slf4j
 public class OptionalUtil {
 
     /**
@@ -87,6 +91,11 @@ public class OptionalUtil {
         });
     }
 
+    /**
+     * test chain
+     * @param name
+     * @return
+     */
     public User getAnotherUser(String name) {
         return new User(0, name);
     }
