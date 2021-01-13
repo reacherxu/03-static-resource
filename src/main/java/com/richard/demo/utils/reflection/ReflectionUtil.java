@@ -26,7 +26,8 @@ public class ReflectionUtil {
     public void testSpringBean() {
         try {
             // 获取class对象
-            Class<?> cls = Class.forName("com.richard.demo.utils.reflection.TestPrint");
+            // Class<?> cls = Class.forName("com.richard.demo.utils.reflection.TestPrint");
+            Class<?> cls = TestPrint.class;
             // 获取spring中的bean对象
             Object bean = applicationContext.getBean(cls);
 
@@ -39,8 +40,8 @@ public class ReflectionUtil {
             // 执行方法
             String result = (String) method.invoke(bean, "first", "second");
             log.info(result);
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            // } catch (ClassNotFoundException e) {
+            // e.printStackTrace();
         } catch (NoSuchMethodException e) {
             e.printStackTrace();
         } catch (IllegalAccessException e) {
@@ -53,7 +54,9 @@ public class ReflectionUtil {
     @Test
     public void testJava() throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException,
             InstantiationException {
-        Class clzss = Class.forName("com.richard.demo.utils.reflection.TestPrint");
+        // Class clzss = Class.forName("com.richard.demo.utils.reflection.TestPrint");
+        Class<?> clzss = TestPrint.class;
+
         Object obj = clzss.getDeclaredConstructor().newInstance();
         // 获取执行方法对象.形参是待执行方法名
         Method method = clzss.getDeclaredMethod("print", String.class, String.class);
