@@ -1,8 +1,10 @@
 package com.richard.demo.utils.rx;
 
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.*;
+
+import org.apache.commons.lang3.SystemUtils;
+
+import lombok.extern.slf4j.Slf4j;
 import rx.Observable;
 import rx.functions.Func2;
 import rx.functions.Func3;
@@ -13,9 +15,25 @@ import rx.schedulers.Schedulers;
  * @author I503139
  *
  */
+@Slf4j
 public class SampleZip {
     // private static final Random rand = new Random();
 
+    private static final int DEFAULT_THREADS_NUMBER = 10;
+    private static final int KEEP_ALIVE_TIME = 30;
+    private static final int WORK_QUEUE_SIZE = 40;
+
+    public ExecutorService executorService() {
+        int poolSize = DEFAULT_THREADS_NUMBER;
+        try {
+            poolSize = Integer.parseInt(
+                    SystemUtils.getEnvironmentVariable("DEFAULT_FIXED_THREADPOOL_SIZE", Integer.toString(DEFAULT_THREADS_NUMBER)));
+        } catch (NumberFormatException ex) {
+            log.warn("'defaultThreadPoolSize' can't be parsed into integer, set to default [{}]", DEFAULT_THREADS_NUMBER);
+        }
+        return new ThreadPoolExecutor(poolSize, poolSize + 10, KEEP_ALIVE_TIME, TimeUnit.SECONDS,
+                new LinkedBlockingQueue<Runnable>(WORK_QUEUE_SIZE));
+    }
     public static void main(String[] args) {
 
         ExecutorService executor = Executors.newFixedThreadPool(10);
