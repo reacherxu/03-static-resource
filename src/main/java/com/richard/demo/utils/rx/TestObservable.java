@@ -1,12 +1,11 @@
 package com.richard.demo.utils.rx;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 
 import org.junit.Test;
-
-import com.google.common.collect.Lists;
 
 import lombok.extern.slf4j.Slf4j;
 import rx.Observable;
@@ -17,7 +16,7 @@ public class TestObservable {
 
     @Test
     public void testIOScheduler() {
-        List<Integer> list = Lists.newArrayList(1,2,3);
+        List<Integer> list = Arrays.asList(1, 2, 3);
         Observable.from(list).flatMap(num -> Observable.fromCallable(new Callable<Integer>() {
             @Override
             public Integer call() throws Exception {
@@ -36,7 +35,7 @@ public class TestObservable {
     public void testScheduler() {
         SampleZip sz = new SampleZip();
         ExecutorService executor = sz.executorService();
-        List<Integer> list = Lists.newArrayList(1,2,3,10,11);
+        List<Integer> list = Arrays.asList(1, 2, 3, 10, 11);
         Observable.from(list).flatMap(num -> Observable.fromCallable(new Callable<Integer>() {
             @Override
             public Integer call() throws Exception {
