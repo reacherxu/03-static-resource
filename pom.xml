@@ -19,6 +19,10 @@
 	</properties>
 
 	<dependencies>
+		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+		</dependency>
 		<!--		Google Guava 工具类库-->
 		<dependency>
 			<groupId>com.google.guava</groupId>

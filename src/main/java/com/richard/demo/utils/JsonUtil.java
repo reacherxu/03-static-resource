@@ -146,6 +146,23 @@ public class JsonUtil {
 
     }
 
+    /**
+     * use json
+     */
+    @Test
+    public void testJsonObject() {
+        com.google.gson.JsonObject jsonObject = new com.google.gson.JsonObject();
+        jsonObject.addProperty("number", 1);
+        jsonObject.addProperty("isValid", false);
+        jsonObject.addProperty("name", "richard");
+
+        System.out.println(jsonObject.toString());
+
+        String result = "\"english\"";
+        result = result.substring(1, result.length() - 1);
+        System.out.println(result);
+    }
+
 
 
 }

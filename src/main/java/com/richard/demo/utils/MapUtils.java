@@ -31,6 +31,7 @@ public class MapUtils {
         System.out.println(map); // 输出 {"key":[1,2]}
         // 还能返回你以前使用的臃肿的Map
         Map<String, Collection<Integer>> collectionMap = map.asMap();
+
     }
 
 }
