@@ -161,18 +161,17 @@ public class JsonUtil {
         jsonObject.addProperty("name", "richard");
 
         // 加入json array
-        JsonParser parser = new JsonParser();
-        jsonObject.add("stringArray", parser.parse("[\"abc\",\"abcdd\"]").getAsJsonArray());
-        jsonObject.add("intArray", parser.parse("[1,3,4]").getAsJsonArray());
-        jsonObject.add("boolArray", parser.parse("[false,true]").getAsJsonArray());
+        jsonObject.add("stringArray", JsonParser.parseString("[\"abc\",\"abcdd\"]").getAsJsonArray());
+        jsonObject.add("intArray", JsonParser.parseString("[1,3,4]").getAsJsonArray());
+        jsonObject.add("boolArray", JsonParser.parseString("[false,true]").getAsJsonArray());
 
         // 加入json Object
-        jsonObject.add("object", parser.parse("{\"triggerFrom\":\"Timer\",\"intValue\":1}").getAsJsonObject());
+        jsonObject.add("object", JsonParser.parseString("{\"triggerFrom\":\"Timer\",\"intValue\":1}").getAsJsonObject());
         System.out.println(jsonObject.toString());
 
         // 获取JsonObject中指定key值对应的JsonArray对象：
         String json = "{\"pids\":[\"1\",\"2\",\"3\"]}";
-        System.out.println(parser.parse(json).getAsJsonObject().getAsJsonArray("pids").get(0).getAsString());
+        System.out.println(JsonParser.parseString(json).getAsJsonObject().getAsJsonArray("pids").get(0).getAsString());
 
 
     }
