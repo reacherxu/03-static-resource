@@ -16,6 +16,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.JsonParser;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -75,7 +76,8 @@ public class JsonUtil {
     }
 
     /**
-     * JSON反序列化为Java对象
+     * 使用alibaba fastjson
+     * 将JSON字符串反序列化为Java对象
      * 
      */
     @Test
@@ -91,11 +93,25 @@ public class JsonUtil {
         log.info("fastjson result is {}", car2.toString());
         log.info("fastjson result, to JSON is {}", JSON.toJSONString(car));
 
+        // 2. fastjson
+        // 2.1 know the type
+        String arrayJson =
+                "[{\"number\":64,\"result\":\"SUCCESS\"},{\"number\":65,\"result\":\"FAILURE\"},{\"number\":66,\"result\":\"ABORTED\"},{\"number\":67,\"result\":\"SUCCESS\"}]";
+        List<Object1> list = JSON.parseArray(arrayJson, Object1.class);
+        log.info(list.toString());
+        // 2.2 do not know type
+        JSONArray array = JSON.parseArray(arrayJson);
+        Iterator<Object> iterator = array.iterator();
+        while (iterator.hasNext()) {
+            JSONObject obj = (JSONObject) iterator.next();
+            log.info("number is {}, result is {}", obj.getString("number"), obj.getString("result"));
+        }
+
     }
 
     /**
-     * JSON反序列化为JsonNode对象
-     * 
+     * JSON字符串反序列化为JsonNode对象
+     * com.fasterxml.jackson.databind.JsonNode
      */
     @Test
     public void testReadJsonNode() throws IOException {
@@ -131,36 +147,34 @@ public class JsonUtil {
             JsonNode node = elements.next();
             log.info(node.toString());
         }
-
-        // 2. fastjson
-        // 2.1 know the type
-        List<Object1> list = JSON.parseArray(arrayJson, Object1.class);
-        log.info(list.toString());
-        // 2.2 do not know type
-        JSONArray array = JSON.parseArray(arrayJson);
-        Iterator<Object> iterator = array.iterator();
-        while (iterator.hasNext()) {
-            JSONObject obj = (JSONObject) iterator.next();
-            log.info("number is {}, result is {}", obj.getString("number"), obj.getString("result"));
-        }
-
     }
 
     /**
-     * use json
+     * use gson加入简单属性，array 属性和复杂属性
      */
     @Test
     public void testJsonObject() {
         com.google.gson.JsonObject jsonObject = new com.google.gson.JsonObject();
+        // 加入简单属性
         jsonObject.addProperty("number", 1);
         jsonObject.addProperty("isValid", false);
         jsonObject.addProperty("name", "richard");
 
+        // 加入json array
+        JsonParser parser = new JsonParser();
+        jsonObject.add("stringArray", parser.parse("[\"abc\",\"abcdd\"]").getAsJsonArray());
+        jsonObject.add("intArray", parser.parse("[1,3,4]").getAsJsonArray());
+        jsonObject.add("boolArray", parser.parse("[false,true]").getAsJsonArray());
+
+        // 加入json Object
+        jsonObject.add("object", parser.parse("{\"triggerFrom\":\"Timer\",\"intValue\":1}").getAsJsonObject());
         System.out.println(jsonObject.toString());
 
-        String result = "\"english\"";
-        result = result.substring(1, result.length() - 1);
-        System.out.println(result);
+        // 获取JsonObject中指定key值对应的JsonArray对象：
+        String json = "{\"pids\":[\"1\",\"2\",\"3\"]}";
+        System.out.println(parser.parse(json).getAsJsonObject().getAsJsonArray("pids").get(0).getAsString());
+
+
     }
 
 
