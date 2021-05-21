@@ -10,9 +10,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
 import org.springframework.beans.BeanUtils;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.ToString;
 import rx.Observable;
@@ -197,6 +201,8 @@ public class StreamUtils {
 
 @ToString
 @Data
+@AllArgsConstructor
+@Builder(toBuilder = true)
 class Customer {
     private String name;
     private String property1;

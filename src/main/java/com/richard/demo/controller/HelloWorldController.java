@@ -5,11 +5,13 @@
 package com.richard.demo.controller;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.MessageSource;
@@ -17,6 +19,7 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -25,6 +28,8 @@ import com.richard.demo.enums.OrderType;
 import com.richard.demo.services.OrderInfoDao;
 import com.richard.demo.services.impl.OrderInfoServiceImpl;
 
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.LoggerContext;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import rx.Observable;
@@ -138,6 +143,74 @@ public class HelloWorldController {
         String message = messageSource.getMessage("welcome", null, LocaleContextHolder.getLocale());
         log.info(message);
         return message;
+    }
+
+
+    /**
+     * springboot中动态修改logback日志级别
+     * 
+     * @return
+     */
+    @RequestMapping("/logger/printAllLogger")
+    public Map printAllLogger() {
+        Map result = new HashMap();
+        result.put("code", 200);
+        result.put("msg", "success");
+
+        LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
+        List<ch.qos.logback.classic.Logger> loggers = loggerContext.getLoggerList();
+        Iterator<ch.qos.logback.classic.Logger> iter = loggers.iterator();
+        System.out.println("printAllLogger begin>>>>>>>>");
+        while (iter.hasNext()) {
+            System.out.println(iter.next().getName());
+        }
+        System.out.println("printAllLogger end>>>>>>>>");
+        return result;
+    }
+
+    @RequestMapping("/logger/print")
+    public Map loggerPrint() {
+        Map result = new HashMap();
+        result.put("code", 200);
+        result.put("msg", "success");
+
+        log.debug("loggerPrint debug>>>>");
+        log.info("loggerPrint info>>>>");
+        log.warn("loggerPrint warn>>>>");
+        log.error("loggerPrint error>>>>");
+
+        return result;
+    }
+
+    @RequestMapping("/logger/level")
+    public Map loggerLevelChange(String level) {
+        Map result = new HashMap();
+        result.put("code", 200);
+        result.put("msg", "success");
+
+        // String loggerFactoryClassStr = StaticLoggerBinder.getSingleton().getLoggerFactoryClassStr();
+        // System.out.println("loggerFactoryClassStr>>>>" + loggerFactoryClassStr);
+
+        LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
+        ch.qos.logback.classic.Logger logger = loggerContext.getLogger("ROOT");
+        switch (level) {
+            case "debug":
+                logger.setLevel(Level.DEBUG);
+                break;
+            case "info":
+
+                logger.setLevel(Level.INFO);
+                break;
+            case "warn":
+                logger.setLevel(Level.WARN);
+                break;
+            case "error":
+                logger.setLevel(Level.ERROR);
+                break;
+            default:
+                break;
+        }
+        return result;
     }
 
 }

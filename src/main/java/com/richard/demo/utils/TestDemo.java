@@ -7,6 +7,8 @@ package com.richard.demo.utils;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ThreadLocalRandom;
+
 import org.junit.Test;
 
 /**
@@ -79,5 +81,27 @@ public class TestDemo {
         map.putIfAbsent("key3", "value1");
 
         map.forEach((key, value) -> System.out.println(key + ":" + value));
+    }
+
+    /**
+     * 很多程序员在调试代码时都喜欢 print 一些内容，这样看起来更直观，print 完之后又很容易忘记删除掉这些没用的内容，最终将代码提交到 remote，code review
+     * 时又不得不删减这些内容重新提交，不但增加不必要的工作量，还让 log tree 的一些节点没有任何价值
+     *
+     * IntelliJ IDEA 提供 Evaluate and Log at Breakpoints 功能恰巧可以帮助我们解决这个问题
+     */
+    @Test
+    public void testIDEALog() {
+        ThreadLocalRandom random = ThreadLocalRandom.current();
+        int count = 0;
+        for (int i = 0; i < 5; i++) {
+            if (isInterested(random.nextInt(10))) {
+                count++;
+            }
+        }
+        System.out.printf("Found %d interested values%n", count);
+    }
+
+    private static boolean isInterested(int i) {
+        return i % 2 == 0;
     }
 }
