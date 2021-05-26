@@ -4,6 +4,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+
 import org.junit.Test;
 
 public class FileUtil {
@@ -55,5 +56,7 @@ public class FileUtil {
 
         // 尽量不要使用user.dir,因为得出的结果各不相同
         System.out.println(System.getProperty("user.dir"));
+
+        System.out.println(1 / 0);
     }
 }

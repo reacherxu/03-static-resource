@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.richard.demo.enums.OrderType;
 import com.richard.demo.services.OrderInfoDao;
+import com.richard.demo.services.aspect.Login;
 import com.richard.demo.services.impl.OrderInfoServiceImpl;
 
 import ch.qos.logback.classic.Level;
@@ -66,7 +67,6 @@ public class HelloWorldController {
         }
         return map;
     }
-
 
     /**
      * test bean map
@@ -211,6 +211,36 @@ public class HelloWorldController {
                 break;
         }
         return result;
+    }
+
+
+    /**
+     * test aspect
+     * 
+     * @return
+     */
+    @GetMapping(value = "/aspect1")
+    @ResponseBody
+    @Login(username = "aspect without error", password = "12345")
+    public Map<String, Object> aspect1() {
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("msg", "ok");
+
+        System.out.println("--------------this is aspect without errors--------------");
+        return map;
+    }
+
+    /**
+     * test aspect with errors
+     *
+     * @return
+     */
+    @GetMapping(value = "/aspect2")
+    @ResponseBody
+    @Login(username = "aspect without error", password = "errors")
+    public Map<String, Object> aspect2() {
+        System.out.println("--------------this is aspect with errors--------------");
+        throw new RuntimeException("this is aspect with errors");
     }
 
 }
