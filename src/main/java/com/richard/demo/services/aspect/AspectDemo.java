@@ -38,9 +38,9 @@ public class AspectDemo {
     /**
      * 前置通知：在目标方法执行前调用
      */
-    @Before(value = "logPointCut()")
-    public void check(){
-        System.out.println("==@Before==checking..........");
+    @Before(value = "logPointCut() && @annotation(login)")
+    public void check(Login login) {
+        System.out.println("==@Before==checking.........." + login.username());
         daoA.queryOrderList();
     }
 
