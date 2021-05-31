@@ -1,6 +1,11 @@
 package com.richard.demo.utils.rx;
 
-import java.util.concurrent.*;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang3.SystemUtils;
 
@@ -34,6 +39,7 @@ public class SampleZip {
         return new ThreadPoolExecutor(poolSize, poolSize + 10, KEEP_ALIVE_TIME, TimeUnit.SECONDS,
                 new LinkedBlockingQueue<Runnable>(WORK_QUEUE_SIZE));
     }
+
     public static void main(String[] args) {
 
         ExecutorService executor = Executors.newFixedThreadPool(10);

@@ -16,31 +16,37 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Configuration
 public class ExecutorServiceConfig {
-    private static final int DEFAULT_THREADS_NUMBER = 10;
-    private static final int KEEP_ALIVE_TIME = 30;
-    private static final int WORK_QUEUE_SIZE = 40;
+    private static final int CORE_POOL_SIZE = 10;
+    private static final int KEEP_ALIVE_TIME = 60;
 
+    /**
+     * 
+     * @return
+     */
     @Bean
-//    @Primary
     public ExecutorService executorService() {
-        int poolSize = DEFAULT_THREADS_NUMBER;
+        int corePoolSize = CORE_POOL_SIZE;
         try {
-            poolSize = Integer.parseInt(
-                    SystemUtils.getEnvironmentVariable("DEFAULT_FIXED_THREADPOOL_SIZE", Integer.toString(DEFAULT_THREADS_NUMBER)));
+            corePoolSize = Integer.parseInt(SystemUtils.getEnvironmentVariable("DEFAULT_CORE_POOL_SIZE", Integer.toString(CORE_POOL_SIZE)));
         } catch (NumberFormatException ex) {
-            log.warn("'defaultThreadPoolSize' can't be parsed into integer, set to default [{}]", DEFAULT_THREADS_NUMBER);
+            log.warn("'coreThreadPoolSize' can't be parsed into integer, set to default [{}]", CORE_POOL_SIZE);
         }
-        return new ThreadPoolExecutor(poolSize, poolSize + 10, KEEP_ALIVE_TIME, TimeUnit.SECONDS,
-                new LinkedBlockingQueue<Runnable>(WORK_QUEUE_SIZE));
+        return new ThreadPoolExecutor(corePoolSize, corePoolSize, KEEP_ALIVE_TIME, TimeUnit.SECONDS, new LinkedBlockingQueue<>());
     }
 
-    /*
-    在异步线程中使用SecurityContextHolder ， 需要将父线程的securityConext传播到异步线程中，
-    实现方式是使用spring提供的一个代理线程池DelegatingSecurityContextExecutorService 来执行异步任务
+    /**
+     * 在异步线程中使用SecurityContextHolder ， 需要将父线程的securityConext传播到异步线程中，
+     * 实现方式是使用spring提供的一个代理线程池DelegatingSecurityContextExecutorService 来执行异步任务
+     * Scheduler.io() 不会传递securityConext， 有可能有线程串的风险
+     * 
+     * @param executorService
+     * @return
      */
     @Qualifier("sfdDelegateExecutorService")
     @Bean
     public DelegatingSecurityContextExecutorService getDelelatingExecutorService(ExecutorService executorService) {
         return new DelegatingSecurityContextExecutorService(executorService);
     }
+
+
 }

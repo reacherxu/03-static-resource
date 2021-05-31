@@ -3,9 +3,12 @@ package com.richard.demo.utils.rx;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 import org.junit.Test;
+import org.springframework.security.concurrent.DelegatingSecurityContextExecutorService;
 
 import lombok.extern.slf4j.Slf4j;
 import rx.Observable;
@@ -13,6 +16,19 @@ import rx.schedulers.Schedulers;
 
 @Slf4j
 public class TestObservable {
+
+
+    /**
+     * will new thread pool each time
+     *
+     * @return
+     */
+    public DelegatingSecurityContextExecutorService getCustomExcutorService() {
+        ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(5, 10, 60, TimeUnit.SECONDS, new LinkedBlockingQueue<>());
+        // 定时清线程
+        threadPoolExecutor.allowCoreThreadTimeOut(true);
+        return new DelegatingSecurityContextExecutorService(threadPoolExecutor);
+    }
 
     @Test
     public void testIOScheduler() {
@@ -34,7 +50,6 @@ public class TestObservable {
     @Test
     public void testScheduler() {
         SampleZip sz = new SampleZip();
-        ExecutorService executor = sz.executorService();
         List<Integer> list = Arrays.asList(1, 2, 3, 10, 11);
         Observable.from(list).flatMap(num -> Observable.fromCallable(new Callable<Integer>() {
             @Override
@@ -48,7 +63,8 @@ public class TestObservable {
                 }
                 return num * num;
             }
-        }).subscribeOn(Schedulers.from(executor)).doOnError(e-> log.warn(e.getMessage())).onErrorResumeNext(response -> Observable.<Integer>empty()))
+        }).subscribeOn(Schedulers.from(getCustomExcutorService())).doOnError(e -> log.warn(e.getMessage()))
+                .onErrorResumeNext(response -> Observable.<Integer>empty()))
                 .toList().toBlocking().single();
     }
 
