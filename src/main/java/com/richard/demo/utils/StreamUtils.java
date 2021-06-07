@@ -6,12 +6,16 @@ package com.richard.demo.utils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.junit.Test;
 import org.springframework.beans.BeanUtils;
 
@@ -21,6 +25,7 @@ import lombok.Data;
 import lombok.ToString;
 import rx.Observable;
 import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 /**
  *
@@ -124,6 +129,23 @@ public class StreamUtils {
         Stream.of("abc", "", "bc", "efg", "abcd", "", "jkl").filter(str -> StringUtils.isNotBlank(str)).forEach(System.out::println);
     }
 
+    @Test
+    public void testObservable() {
+        List<Person> persons = Arrays.asList(new Person("Max", 18), new Person("Maximam", 180), new Person("Peter", 23),
+                new Person("Pamela", 23), new Person("David", 12));
+        Observable.from(persons).flatMap(person -> Observable.fromCallable(() -> {
+            if (person.getAge() > 100) {
+                throw new RuntimeException("age is too big");
+            }
+            if (person.getAge() < 18) {
+                throw new RuntimeException("age is too small");
+            }
+            return person;
+        })).onErrorResumeNext(response -> Observable.<Person>empty()).forEach(person -> {
+            System.out.println(person);
+        });
+    }
+
     /**
      * map为一对一变换。
      * 一个对象 -> 另一个对象 or 一个数组 -> 另一个数组。
@@ -132,6 +154,32 @@ public class StreamUtils {
     public void testMap() {
         List<Person> persons =
                 Arrays.asList(new Person("Max", 18), new Person("Peter", 23), new Person("Pamela", 23), new Person("David", 12));
+        Map<String, Person> personMap = new HashMap<>();
+        // test reduce
+        Observable.from(persons).flatMap(person -> Observable.fromCallable(() -> {
+            return ImmutablePair.of(person.getName(), person);
+        }).subscribeOn(Schedulers.io()).onErrorResumeNext(response -> Observable.<ImmutablePair<String, Person>>empty()))
+                .reduce(personMap, (map, pair) -> {
+                    map.put(pair.getLeft(), pair.getRight());
+                    return map;
+                }).toList().toBlocking().single();
+        System.out.println("person map  is " + personMap.toString());
+
+        // test map, 注意 key 不要重复，否则会覆盖
+        // 收集原始Observable发射的所有数据项到一个Map（默认是HashMap）然后发射这个Map。
+        // 你可以提供一个用于生成Map的Key的函数，还可以提供一个函数转换数据项到Map存储的值（默认数据项本身就是值）
+        Map<Integer, Person> ageMap = Observable.from(persons).filter(person -> Objects.nonNull(person)).toMap(p -> {
+            return p.getAge();
+        }).toBlocking().single();
+        System.out.println("person age map is " + ageMap.toString());
+
+        // test toMultimap, value 是 Collection
+        List<Person> persons2 = Arrays.asList(new Person("Max", 18), new Person("Max", 28), new Person("Peter", 23),
+                new Person("Pamela", 23), new Person("David", 12));
+        Map<Integer, Collection<Person>> ageMultiMap =
+                Observable.from(persons2).filter(person -> Objects.nonNull(person)).toMultimap(Person::getAge).toBlocking().single();
+        System.out.println("person age multimap is " + ageMultiMap.toString());
+
 
         List<String> nameList = persons.stream().map(Person::getName).collect(Collectors.toList());
         System.out.println("names are " + nameList);
@@ -278,6 +326,6 @@ class Person {
 
     @Override
     public String toString() {
-        return name;
+        return name + ":" + age;
     }
 }
