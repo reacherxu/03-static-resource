@@ -57,6 +57,6 @@ public class FileUtil {
         // 尽量不要使用user.dir,因为得出的结果各不相同
         System.out.println(System.getProperty("user.dir"));
 
-        System.out.println(1 / 0);
+
     }
 }
