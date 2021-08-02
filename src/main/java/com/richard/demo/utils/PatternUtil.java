@@ -6,6 +6,7 @@ package com.richard.demo.utils;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import org.junit.Test;
 
 /**
@@ -119,5 +120,26 @@ public class PatternUtil {
         System.out.println(s);// 前app中app
         m.appendTail(s);
         System.out.println(s);// 前app中app后
+    }
+
+    @Test
+    public void testCompileMacherAndReplace() {
+        String src = "之前ab%12其中cd%34最后";
+        String replacement = Pattern.compile("(\\w+)%(\\d+)").matcher(src).replaceAll("app");
+        System.out.println(replacement);
+        System.out.println(src.replaceAll("(\\w+)%(\\d+)", "app"));
+        System.out.println();
+
+        // replace 是字符串替换，replaceAll 是正则表达式的匹配
+        String src1 = "之前ab其中ab最后";
+        System.out.println(src1);
+        System.out.println(src1.replace("ab", "AB"));
+        System.out.println();
+
+        String src2 = "之前.其中.最后";
+        System.out.println(src2);
+        System.out.println(src2.replace(".", "AB"));
+        System.out.println(Boolean.FALSE.toString());
+
     }
 }
