@@ -16,9 +16,11 @@ import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonParser;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -173,6 +175,23 @@ public class JsonUtil {
         String json = "{\"pids\":[\"1\",\"2\",\"3\"]}";
         System.out.println(JsonParser.parseString(json).getAsJsonObject().getAsJsonArray("pids").get(0).getAsString());
 
+        // test 2
+        // 外层是json,里面是array
+        // {"ServiceMapping":[{"number":1,"isValid":false,"name":"richard"}]}
+        com.google.gson.JsonObject jsonObject1 = new com.google.gson.JsonObject();
+        JsonArray array = new JsonArray();
+        com.google.gson.JsonObject jsonObject2 = new com.google.gson.JsonObject();
+        jsonObject2.addProperty("number", 1);
+        jsonObject2.addProperty("isValid", false);
+        jsonObject2.addProperty("name", "richard");
+        array.add(jsonObject2);
+        jsonObject1.add("ServiceMapping", array);
+        System.out.println(jsonObject1.toString());
+
+        // test 3
+        // 空json : {}
+        com.google.gson.JsonObject jsonObject3 = new com.google.gson.JsonObject();
+        System.out.println(jsonObject3.toString());
 
     }
 
@@ -184,6 +203,7 @@ public class JsonUtil {
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 class Car {
 
     private String color;
@@ -192,6 +212,7 @@ class Car {
 
 
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 class Object1 {

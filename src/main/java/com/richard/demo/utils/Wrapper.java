@@ -1,10 +1,14 @@
 package com.richard.demo.utils;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.ImmutableTriple;
 import org.junit.Test;
+
+import com.google.gson.Gson;
 
 /**
  * 包装临时对象
@@ -19,8 +23,15 @@ public class Wrapper {
     public void testReturn2TempResponse() {
         // 返回两个字段
         ImmutablePair<Integer, String> pair = ImmutablePair.of(1, "yideng");
+        ImmutablePair<Integer, String> pair2 = ImmutablePair.of(2, "guojing");
+
+        List<ImmutablePair<Integer, String>> pairs = new ArrayList<>();
+        pairs.add(pair);
+        pairs.add(pair2);
+
         // 输出 1,yideng
-        System.out.println(pair.getLeft() + "," + pair.getRight());
+        Gson gson = new Gson();
+        System.out.println(gson.toJson(pairs));
 
         // 返回三个字段
         ImmutableTriple<Integer, String, Date> triple = ImmutableTriple.of(1, "yideng", new Date());

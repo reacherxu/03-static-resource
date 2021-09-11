@@ -22,6 +22,11 @@
 	</properties>
 
 	<dependencies>
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>2.2</version>
+		</dependency>
 		<!-- power mock -->
 		<dependency>
 			<groupId>org.powermock</groupId>
