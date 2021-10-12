@@ -7,6 +7,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.zip.ZipEntry;
@@ -149,9 +150,14 @@ public class FileUtil {
     }
 
     public static void main(String[] args) {
-        Resource file = test1();
-        log.info(file.getFilename());
+        // Resource file = test1();
+        // log.info(file.getFilename());
+        String dir = "temp";
+        File file = new File(getTempLoaction() + "/" + dir);
+        createDirectory(file);
+        createDirectory(new File(getTempLoaction() + "/" + dir + "/bbb"));
 
+        zipFiles(Arrays.asList(file), new File(getTempLoaction() + "/" + dir + ".zip"));
     }
 
 

@@ -222,12 +222,12 @@ public class HelloWorldController {
     @GetMapping(value = "/aspect1")
     @ResponseBody
     @Login(username = "richard", password = "12345")
-    public Map<String, Object> aspect1() {
+    public String aspect1() {
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("msg", "ok");
 
         System.out.println("--------------this is aspect without errors--------------");
-        return map;
+        return "return ok";
     }
 
     /**
