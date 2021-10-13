@@ -6,7 +6,9 @@ package com.richard.demo.model;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  *
@@ -15,6 +17,8 @@ import lombok.Data;
  */
 @ApiModel(value = "user对象", description = "用户对象user")
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class User {
     @ApiModelProperty(value = "id", name = "user id", required = true)
     private int id;

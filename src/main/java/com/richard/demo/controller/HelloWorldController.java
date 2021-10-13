@@ -11,20 +11,25 @@ import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 
+import javax.validation.Valid;
+
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.richard.demo.enums.OrderType;
+import com.richard.demo.model.User;
 import com.richard.demo.services.OrderInfoDao;
 import com.richard.demo.services.aspect.Login;
 import com.richard.demo.services.impl.OrderInfoServiceImpl;
@@ -66,6 +71,31 @@ public class HelloWorldController {
             entry.getValue().queryOrderList();
         }
         return map;
+    }
+
+
+    @Autowired
+    private RedisTemplate<String, Object> redisTemplate;
+
+    @PostMapping(value = "/redisAddUser")
+    @ResponseBody
+    public Map<String, Object> redisAddUser(@RequestBody @Valid User user) {
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("msg", "ok");
+
+        System.out.println("--------------map--------------");
+        String key = "user:" + user.getId();
+        redisTemplate.opsForValue().set(key, user);
+
+        return map;
+    }
+
+    @GetMapping(value = "/redisGetUser")
+    @ResponseBody
+    public User redisGetUser(@RequestParam String key) {
+        User user = (User) redisTemplate.opsForValue().get(key);
+        log.info("user: " + user.toString());
+        return user;
     }
 
     /**
