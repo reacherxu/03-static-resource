@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
 import org.apache.commons.collections4.CollectionUtils;
 import org.junit.Test;
 
@@ -53,6 +54,17 @@ public class CollectionUtilsTest {
         // listA扣除listB,剩下的元素
         // 差集:返回只存在于listA左集合独有的数据, 结果【C】
         System.out.println("差集:" + CollectionUtils.subtract(listA, listB));
+
+        Set<String> setA = new HashSet<>();
+        setA.add("5807de8d-aacf-48c3-b808-65f68bd7f75b");
+        setA.add("b9a4bc54-a603-4526-be4c-f87c2694e613");// same id
+        setA.add("6a2116e1-d14d-47aa-b7c0-5206953a36dd");
+        Set<String> setB = new HashSet<>();
+        setB.add("b9a4bc54-a603-4526-be4c-f87c2694e613");
+        setB.add("c48bf9a4-816a-4d7e-a4e5-4f4aebc07b2b");
+        setB.add("dffcdfe6-cc58-4b4e-af2c-c050a48299ec");
+        System.out.println("setA - setB差集:" + CollectionUtils.subtract(setA, setB));
+
     }
 
     @Test
