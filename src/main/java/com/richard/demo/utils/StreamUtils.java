@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -23,6 +24,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
 import rx.Observable;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
@@ -32,6 +34,7 @@ import rx.schedulers.Schedulers;
  * @author richard.xu03@sap.com
  * @version $Id: StreamUtils.java, v 0.1 Aug 11, 2019 6:24:50 PM richard.xu Exp $
  */
+@Slf4j
 public class StreamUtils {
     @Test
     public void testIsSameList() {
@@ -146,12 +149,60 @@ public class StreamUtils {
         });
     }
 
+
+    /**
+     * 获取以某属性为key，其他属性或者对应对象为value的Map集合
+     * 
+     * Function.identity()返回一个输出跟输入一样的Lambda表达式对象，等价于形如t -> t形式的Lambda表达式。
+     * (m1,m2)-> m1此处的意思是当转换map过程中如果list中有两个相同id的对象，则map中存放的是第一个对象，此处可以根据项目需要自己写。
+     */
+    @Test
+    public void testMap1() {
+        List<Person> persons =
+                Arrays.asList(new Person("Max", 18), new Person("Peter", 23), new Person("Pamela", 23), new Person("David", 12));
+        Map<String, Person> map = persons.stream().collect(Collectors.toMap(Person::getName, Function.identity(), (m1, m2) -> m1));
+        log.info(map.toString());
+    }
+
+
+    /**
+     * 以某个属性进行分组的Map集合
+     *
+     * 以部门id为例，有时需要根据部门分组，筛选出不同部门下的人员
+     */
+    @Test
+    public void testMap2() {
+        List<Person> persons =
+                Arrays.asList(new Person("Max", 18), new Person("Peter", 23), new Person("Pamela", 23), new Person("David", 12));
+
+        // 没有工具的写法
+        Map<Integer, List<Person>> ageMap = new HashMap<>();
+        for (Person u : persons) {
+            if (ageMap.containsKey(u.getAge())) {
+                ageMap.get(u.getAge()).add(u);
+            } else {
+                List<Person> users1 = new ArrayList<>();
+                users1.add(u);
+                ageMap.put(u.getAge(), users1);
+            }
+        }
+        log.info("没有工具的写法 {} ", ageMap.toString());
+
+        // 简约的写法
+        Map<Integer, List<Person>> ageMap2 = persons.stream().collect(Collectors.groupingBy(Person::getAge));
+        log.info(" 简约的写法 {} ", ageMap2.toString());
+
+        // 先筛选，再转化成map
+        Map<Integer, List<Person>> ageMap3 = persons.stream().filter(p -> p.getAge() >= 18).collect(Collectors.groupingBy(Person::getAge));
+        log.info(" filer之后的简约写法 {} ", ageMap3.toString());
+    }
+
     /**
      * map为一对一变换。
      * 一个对象 -> 另一个对象 or 一个数组 -> 另一个数组。
      */
     @Test
-    public void testMap() {
+    public void testObeservableMap() {
         List<Person> persons =
                 Arrays.asList(new Person("Max", 18), new Person("Peter", 23), new Person("Pamela", 23), new Person("David", 12));
         Map<String, Person> personMap = new HashMap<>();

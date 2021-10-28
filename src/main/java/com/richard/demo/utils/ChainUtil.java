@@ -38,6 +38,7 @@ class TestClass1 {
     private Integer age;
     private Boolean married;
 
+    // 用于不使用默认null的builder的构造函数
     @Builder.Default
     private List<String> houses = new ArrayList<>();
 

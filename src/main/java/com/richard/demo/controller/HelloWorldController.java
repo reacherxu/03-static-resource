@@ -16,6 +16,7 @@ import javax.validation.Valid;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -32,6 +33,7 @@ import com.richard.demo.enums.OrderType;
 import com.richard.demo.model.User;
 import com.richard.demo.services.OrderInfoDao;
 import com.richard.demo.services.aspect.Login;
+import com.richard.demo.services.impl.OrderInfoDaoAImpl;
 import com.richard.demo.services.impl.OrderInfoServiceImpl;
 
 import ch.qos.logback.classic.Level;
@@ -70,6 +72,24 @@ public class HelloWorldController {
             System.out.println("key=" + entry.getKey());
             entry.getValue().queryOrderList();
         }
+        return map;
+    }
+
+    @Autowired
+    private ApplicationContext applicationContext;
+
+    /**
+     * how to get bean from spring context
+     * 
+     * @param name
+     * @return
+     */
+    @GetMapping(value = "/getBean")
+    @ResponseBody
+    public Map<String, Object> getBean(@RequestParam String name) {
+        Map<String, Object> map = new HashMap<String, Object>();
+        OrderInfoDaoAImpl bean = (OrderInfoDaoAImpl) applicationContext.getBean(name);
+        map.put("msg", bean.getOrderType());
         return map;
     }
 
