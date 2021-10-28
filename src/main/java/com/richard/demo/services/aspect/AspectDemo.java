@@ -31,7 +31,6 @@ public class AspectDemo {
      */
     @Pointcut("@annotation(com.richard.demo.services.aspect.Login)")
     private void logPointCut() {
-
     }
 
     /**
