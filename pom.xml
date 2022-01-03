@@ -22,7 +22,7 @@
 	</properties>
 
 	<dependencies>
-		<!--		h2 database-->
+		<!--h2 database-->
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>

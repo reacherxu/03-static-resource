@@ -162,6 +162,8 @@ public class StreamUtils {
                 Arrays.asList(new Person("Max", 18), new Person("Peter", 23), new Person("Pamela", 23), new Person("David", 12));
         Map<String, Person> map = persons.stream().collect(Collectors.toMap(Person::getName, Function.identity(), (m1, m2) -> m1));
         log.info(map.toString());
+        Map<String, Integer> map2 = persons.stream().collect(Collectors.toMap(Person::getName, Person::getAge));
+        log.info(map2.toString());
     }
 
 
@@ -195,6 +197,17 @@ public class StreamUtils {
         // 先筛选，再转化成map
         Map<Integer, List<Person>> ageMap3 = persons.stream().filter(p -> p.getAge() >= 18).collect(Collectors.groupingBy(Person::getAge));
         log.info(" filer之后的简约写法 {} ", ageMap3.toString());
+    }
+
+    @Test
+    public void testMap3() {
+        List<String> list = Arrays.asList("1", "2", "3", "1", "1");
+        // 先筛选，再转化成map
+        List<String> list1 = list.stream().filter(p -> Integer.valueOf(p) < 3).collect(Collectors.toList());
+        log.info(" filer之后的简约写法 {} ", list1);
+        List<String> list2 = list.stream().distinct().filter(p -> Integer.valueOf(p) < 3).collect(Collectors.toList());
+        log.info(" filer之后的简约写法 {} ", list2);
+
     }
 
     /**
