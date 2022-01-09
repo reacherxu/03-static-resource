@@ -7,6 +7,7 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
@@ -34,8 +35,10 @@ public class OrderInfoServiceImpl implements ApplicationContextAware {
     // usage 2
     private final Map<OrderType, OrderInfoDao> orderInfoMap = new EnumMap<>(OrderType.class);
 
-    OrderInfoDaoAImpl orderInfoDaoA;
-    OrderInfoDaoBImpl orderInfoDaoB;
+    @Autowired
+    private OrderInfoDaoAImpl orderInfoDaoA;
+    @Autowired
+    private OrderInfoDaoBImpl orderInfoDaoB;
 
     @PostConstruct
     public void initialDeployerMap() {

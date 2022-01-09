@@ -154,7 +154,7 @@ public class HelloWorldController {
     @ResponseBody
     public String enumBeanMap2(@PathVariable String name) {
         OrderType type = OrderType.getByName(name);
-        return orderInfoService.getOrderService(type).queryOrderList();
+        return orderInfoService.getOrder(type).queryOrderList();
     }
 
     @Autowired
