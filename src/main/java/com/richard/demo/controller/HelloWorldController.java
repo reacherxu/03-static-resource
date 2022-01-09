@@ -150,6 +150,13 @@ public class HelloWorldController {
         return orderInfoService.getOrderService(type).queryOrderList();
     }
 
+    @GetMapping(value = "/enumBeanMap2/{name}")
+    @ResponseBody
+    public String enumBeanMap2(@PathVariable String name) {
+        OrderType type = OrderType.getByName(name);
+        return orderInfoService.getOrderService(type).queryOrderList();
+    }
+
     @Autowired
     @Qualifier("sfdDelegateExecutorService")
     private final ExecutorService executorService;
