@@ -141,6 +141,8 @@ public class SpELTest {
 
     /**
      * 不使用# 打头的spel 方式
+     * refer to https://www.jianshu.com/p/b53965977d26
+     * 为了更优雅的兼容map解析，需要对原有的StandardEvaluationContext添加一个属性访问器：MapAccessor
      */
     @Test
     public void testMap2() {
@@ -181,6 +183,7 @@ public class SpELTest {
 
     /**
      * 标准的方式获取map值
+     * sample : https://blog.csdn.net/sinat_34863938/article/details/115915357
      */
     @Test
     public void testMap() {
