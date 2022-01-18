@@ -21,6 +21,7 @@ public class TestClass1 {
     private String name;
     private Integer age;
     private Boolean married;
+    private SubClass1 sub;
 
     // 用于不使用默认null的builder的构造函数
     @Builder.Default
