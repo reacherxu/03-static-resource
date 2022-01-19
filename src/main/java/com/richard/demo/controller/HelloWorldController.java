@@ -279,7 +279,7 @@ public class HelloWorldController {
     @GetMapping(value = "/aspect1")
     @ResponseBody
     @Login(username = "richard", password = "12345")
-    public String aspect1() {
+    public String aspect1(@RequestParam String param1, @RequestParam int param2) {
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("msg", "ok");
 

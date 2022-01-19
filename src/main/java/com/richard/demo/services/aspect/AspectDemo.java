@@ -15,6 +15,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.richard.demo.services.impl.OrderInfoDaoAImpl;
+import com.richard.demo.utils.JacksonUtil;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author richard.xu03@sap.com
@@ -22,6 +25,7 @@ import com.richard.demo.services.impl.OrderInfoDaoAImpl;
  */
 @Aspect
 @Component
+@Slf4j
 public class AspectDemo {
     @Autowired
     private OrderInfoDaoAImpl daoA;
@@ -75,6 +79,7 @@ public class AspectDemo {
         String methodName = joinPoint.getSignature().getName();
         // 获取方法传入参数
         Object[] params = joinPoint.getArgs();
+        log.info("input param size is {}, params are {}", params.length, JacksonUtil.writeStr(params));
         Login login = getDeclaredAnnotation(joinPoint);
         System.out.println("==@Around==  ");
         // 执行源方法
