@@ -6,6 +6,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.retry.annotation.EnableRetry;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -18,6 +19,7 @@ import lombok.extern.slf4j.Slf4j;
  */
 @SpringBootApplication
 @ServletComponentScan
+@EnableRetry
 @Slf4j
 public class DemoApplication implements CommandLineRunner {
 

@@ -32,6 +32,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.richard.demo.enums.OrderType;
 import com.richard.demo.model.User;
 import com.richard.demo.services.OrderInfoDao;
+import com.richard.demo.services.RetryService;
 import com.richard.demo.services.aspect.Login;
 import com.richard.demo.services.impl.OrderInfoDaoAImpl;
 import com.richard.demo.services.impl.OrderInfoServiceImpl;
@@ -298,6 +299,15 @@ public class HelloWorldController {
     public Map<String, Object> aspect2() {
         System.out.println("--------------this is aspect with errors--------------");
         throw new RuntimeException("this is aspect with errors");
+    }
+
+
+    @Autowired
+    RetryService retryService;
+
+    @PostMapping(value = "/retryService")
+    public void retryService(@RequestParam String command) throws Exception {
+        retryService.service(command);
     }
 
 }

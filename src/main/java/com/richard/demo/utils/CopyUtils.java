@@ -20,5 +20,7 @@ public class CopyUtils {
         Customer customer1 = customer.toBuilder().build();
         System.out.println(customer1);
 
+        System.out.println(Double.valueOf("1").intValue() + 1);
+
     }
 }
