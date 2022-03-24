@@ -5,9 +5,12 @@ import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Assert;
 import org.junit.Test;
+
+import com.google.common.collect.Lists;
 
 public class StringUtil {
 
@@ -50,6 +53,9 @@ public class StringUtil {
 	public void testStringFormat() {
 		String info = String.format("%s : %s","time",new Date());
 		System.out.println(info);
+
+        List<String> indicators = Lists.newArrayList("name1", "name2");
+        System.out.println(StringUtils.join(indicators, ","));
 	}
 
     @Test

@@ -19,6 +19,8 @@ import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonParser;
 
@@ -114,6 +116,92 @@ public class JsonUtil {
 
     }
 
+    /**
+     * JsonNode是不可变的。为了创建JsonNode对象图，你需要改变图中的JsonNode实例，
+     * 如设置属性值和子JsonNode实例。因为其不可变性，不能直接进行操作，替代的是其子类ObjectNode
+     */
+    @Test
+    public void testWriteJsonNode() throws IOException {
+
+        // 简单数据类型
+        ObjectMapper objectMapper = new ObjectMapper();
+        ObjectNode parentNode = objectMapper.createObjectNode();
+        parentNode.put("serviceId", "663a1396-f167-4bc6-b7b8-d93eaae2f6de");// put设置属性值为原始数据类型
+        parentNode.put("metadataId", "4788a5c9-e706-463b-8b73-268650c34723");
+        parentNode.put("field3", 999.999);
+
+        // 对象数据类型
+        ObjectNode requestPayload = objectMapper.createObjectNode();
+        requestPayload.put("a", "#request['name']+#request['description']+22");
+        requestPayload.put("sub-field2", true);
+
+        // 数组数据类型
+        ArrayNode arrayNode = objectMapper.createArrayNode();
+        arrayNode.add("a");
+        arrayNode.add("b");
+        parentNode.set("array", arrayNode);
+
+        // 数组里面套对象
+        ArrayNode arrayNode2 = objectMapper.createArrayNode();
+        ObjectNode arraySubObject = objectMapper.createObjectNode();
+        arraySubObject.put("f", "#request['name']+2");
+        arrayNode2.add(arraySubObject);
+        parentNode.set("array2", arrayNode2);
+
+        parentNode.set("child1", requestPayload);// set设置设置ObjectNode对象属性
+        JsonNode jsonNode = parentNode;
+        System.out.println(objectMapper.writeValueAsString(jsonNode));
+    }
+
+
+    /**
+     * "options": {
+     * "serviceId": "663a1396-f167-4bc6-b7b8-d93eaae2f6de",
+     * "metadataId": "4788a5c9-e706-463b-8b73-268650c34723",
+     * "requestPayload": {- action body parameters
+     * "a": "#request['name']+#request['description']+22",
+     * "b": {"x":12, "y":"#request['items'][0]['name']"},
+     * "array":["13", "14", "#request['items'][1]['name']"],
+     * "arrayObj":[{"f":15}, {"f":"#request['name']+2"}]
+     * }
+     * 
+     * @throws IOException
+     */
+    @Test
+    public void testWriteJsonNodeDemo() throws IOException {
+
+        // 简单数据类型
+        ObjectMapper objectMapper = new ObjectMapper();
+        ObjectNode options = objectMapper.createObjectNode();
+        options.put("serviceId", "663a1396-f167-4bc6-b7b8-d93eaae2f6de");// put设置属性值为原始数据类型
+        options.put("metadataId", "4788a5c9-e706-463b-8b73-268650c34723");
+
+        ObjectNode requestPayload = objectMapper.createObjectNode();
+        // 加简单数据类型
+        requestPayload.put("a", "#request['name']+#request['description']+22");
+        // 加对象数据类型
+        ObjectNode b = objectMapper.createObjectNode();
+        b.put("x", 12);
+        b.put("y", "#request['items'][0]['name']");
+        requestPayload.put("b", b);
+        // 加数组
+        ArrayNode array = objectMapper.createArrayNode();
+        array.add("13");
+        array.add("14");
+        array.add("#request['items'][1]['name']");
+        requestPayload.put("array", array);
+
+        // 加数组对象
+        ArrayNode arrayObj = objectMapper.createArrayNode();
+        ObjectNode obj = objectMapper.createObjectNode();
+        obj.put("f", 15);
+        obj.put("f", "#request['name']+2");
+        arrayObj.add(obj);
+        requestPayload.put("arrayObj", arrayObj);
+        options.put("requestPayload", requestPayload);
+        System.out.println(objectMapper.writeValueAsString(options));
+
+    }
     /**
      * JSON字符串反序列化为JsonNode对象
      * com.fasterxml.jackson.databind.JsonNode
