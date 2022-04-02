@@ -9,8 +9,10 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
 
 import com.alibaba.fastjson.JSON;
@@ -23,6 +25,8 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonParser;
+import com.jayway.jsonpath.Configuration;
+import com.jayway.jsonpath.JsonPath;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -117,6 +121,7 @@ public class JsonUtil {
     }
 
     /**
+     * refer to https://www.cnblogs.com/wgx519/p/13688615.html
      * JsonNode是不可变的。为了创建JsonNode对象图，你需要改变图中的JsonNode实例，
      * 如设置属性值和子JsonNode实例。因为其不可变性，不能直接进行操作，替代的是其子类ObjectNode
      */
@@ -129,6 +134,9 @@ public class JsonUtil {
         parentNode.put("serviceId", "663a1396-f167-4bc6-b7b8-d93eaae2f6de");// put设置属性值为原始数据类型
         parentNode.put("metadataId", "4788a5c9-e706-463b-8b73-268650c34723");
         parentNode.put("field3", 999.999);
+
+        ObjectNode emptyNode = objectMapper.createObjectNode();
+        parentNode.put("emptyNode", emptyNode);
 
         // 对象数据类型
         ObjectNode requestPayload = objectMapper.createObjectNode();
@@ -224,6 +232,64 @@ public class JsonUtil {
             JsonNode value = jsonNode.findValue(key);
             System.out.println("value键是:" + value);
         }
+    }
+
+    @Test
+    public void testReadJsonNodePath() throws IOException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        String json =
+                "{\"text\":\"张三\",\"expensive\":6,\"body\":{\"rvNoNum\":23,\"rvNoRecords\":[{\"score\":4,\"rvAddress\":\"2\",\"consignments\":null},{\"score\":8,\"rvAddress\":\"3\",\"consignments\":null}]}}";
+        JsonNode jsonNode = objectMapper.readTree(json);
+        String path = generateJsonPathArgumentFromJson(jsonNode, "8");
+        System.out.println(path);
+        // 输出text的值
+        Object document = Configuration.defaultConfiguration().jsonProvider().parse(json);
+
+        String text = JsonPath.read(document, "$.text");
+
+        // 输出rvNoNum的值
+        int rvNoNum = JsonPath.read(document, "$.body.rvNoNum");
+        int score = JsonPath.read(document, "$.body.rvNoRecords[1].score");
+
+        Iterator<Map.Entry<String, JsonNode>> f = jsonNode.fields();
+        while (f.hasNext()) {
+            Map.Entry<String, JsonNode> entry = f.next();
+            JsonNode value = entry.getValue();
+            String key = entry.getKey();
+
+            value.path(key);
+            System.out.println("key is " + key + ",value is " + value.asToken().name());
+        }
+    }
+
+    protected static String generateJsonPathArgumentFromJson(JsonNode jsonNode, String valueSearched) {
+        if (jsonNode.isValueNode() && !jsonNode.asText().equals(valueSearched)) {
+            return null;
+        } else if (jsonNode.isContainerNode()) {
+            if (jsonNode.isObject()) {
+                Iterator<Map.Entry<String, JsonNode>> elements = jsonNode.fields();
+                while (elements.hasNext()) {
+                    Map.Entry<String, JsonNode> element = elements.next();
+                    String res = generateJsonPathArgumentFromJson(element.getValue(), valueSearched);
+                    if (res != null) {
+                        return "." + element.getKey() + res;
+                    }
+                }
+            } else {
+                int i = 0;
+                Iterator<JsonNode> elements = jsonNode.elements();
+                while (elements.hasNext()) {
+                    JsonNode element = elements.next();
+                    String res = generateJsonPathArgumentFromJson(element, valueSearched);
+                    if (StringUtils.isNotBlank(res)) {
+                        return "[" + i + "]" + res;
+                    }
+                    i++;
+                }
+            }
+        }
+
+        return "";
     }
 
     @Test

@@ -1,6 +1,8 @@
 package com.richard.demo.utils;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -311,7 +313,49 @@ public class SpELTest {
         String testVal2 = responseParser.parseExpression("#response['testVal2']").getValue(responseContext, String.class);
         Boolean testVal3 = responseParser.parseExpression("#response['testVal3']").getValue(responseContext, Boolean.class);
         log.info("testVal1 {}, testVal2 {}, testVal3 {}",testVal1,testVal2,testVal3);
+    }
 
+    // 解析json 对象
+    @Test
+    public void testJsonObject() throws IOException {
+        ExpressionParser responseParser = new SpelExpressionParser();
+        Gson gson = new Gson();
+        String json =
+                "{\"text\":\"张三\",\"expensive\":6,\"body\":{\"rvNoNum\":23,\"rvNoRecords\":[{\"score\":4,\"rvAddress\":\"2\",\"consignments\":null},{\"score\":8,\"rvAddress\":\"3\",\"consignments\":null}]}}";
+
+        Map<String, Object> realResponse = gson.fromJson(json, Map.class);
+        // ObjectMapper objectMapper = new ObjectMapper();
+        // JsonNode realResponse = objectMapper.readTree(json);
+
+        EvaluationContext responseContext = new StandardEvaluationContext();
+        responseContext.setVariable("response", realResponse);
+        // 简单属性
+        String testVal1 = responseParser.parseExpression("#response['text']").getValue(responseContext, String.class);
+        // 对象属性
+        String testVal2 = responseParser.parseExpression("#response['body']['rvNoNum']").getValue(responseContext, String.class);
+        // 数组属性
+        String testVal3 =
+                responseParser.parseExpression("#response['body']['rvNoRecords'][1]['score']").getValue(responseContext, String.class);
+        log.info("testVal1 {}, testVal2 {}, testVal3 {}", testVal1, testVal2, testVal3);
+    }
+
+    // 解析数组对象
+    @Test
+    public void testJsonArray() throws IOException {
+        ExpressionParser responseParser = new SpelExpressionParser();
+        Gson gson = new Gson();
+        String json =
+                "[{\"text\":\"张三\",\"expensive\":6,\"body\":{\"rvNoNum\":23,\"rvNoRecords\":[{\"score\":4,\"rvAddress\":\"2\",\"consignments\":null},{\"score\":8,\"rvAddress\":\"3\",\"consignments\":null}]}}]";
+
+        Collection realResponse = gson.fromJson(json, Collection.class);
+        EvaluationContext responseContext = new StandardEvaluationContext();
+        responseContext.setVariable("response", realResponse);
+        Object testVal1 = responseParser.parseExpression("#response[0]['text']").getValue(responseContext);
+
+        Object testVal2 = responseParser.parseExpression("#response[0]['body']['rvNoNum']").getValue(responseContext);
+        Object testVal3 = responseParser.parseExpression("#response[0]['body']['rvNoRecords'][1]['score']").getValue(responseContext);
+        log.info("testVal1 {} : type {}, testVal2 {} : type {}, testVal3 {} : type {}", testVal1, testVal1 instanceof String, testVal2,
+                testVal2 instanceof Double, testVal3, testVal3 instanceof Double);
     }
 
     /**
