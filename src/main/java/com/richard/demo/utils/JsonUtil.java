@@ -23,6 +23,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.TextNode;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonParser;
 import com.jayway.jsonpath.Configuration;
@@ -161,6 +162,136 @@ public class JsonUtil {
         System.out.println(objectMapper.writeValueAsString(jsonNode));
     }
 
+    /**
+     * 反序列化成JsonNode 对象
+     * 
+     * @throws IOException
+     */
+    @Test
+    public void readTree() throws IOException {
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        // 加数组
+        String array = "[{\"score\":4,\"rvAddress\":\"2\",\"consignments\":null},{\"score\":8,\"rvAddress\":\"3\",\"consignments\":null}]";
+        ArrayNode arrayNode = (ArrayNode) objectMapper.readTree(array);
+        // 加对象
+        String object =
+                "{\"text\":\"张三\",\"expensive\":6,\"body\":{\"rvNoNum\":23,\"rvNoRecords\":[{\"score\":4,\"rvAddress\":\"2\",\"consignments\":null},{\"score\":8,\"rvAddress\":\"3\",\"consignments\":null}]}}";
+        ObjectNode objectNode = (ObjectNode) objectMapper.readTree(object);
+
+        ObjectNode options = objectMapper.createObjectNode();
+        options.set("array", arrayNode);
+        options.set("object", objectNode);
+        options.put("serviceId", "663a1396-f167-4bc6-b7b8-d93eaae2f6de");
+        System.out.println(objectMapper.writeValueAsString(options));
+
+    }
+
+    /**
+     * 递归读取叶子节点的值
+     * refer to https://www.cnblogs.com/witpool/p/8444700.html
+     *
+     * @throws IOException
+     */
+    @Test
+    public void readLeafNode() throws IOException {
+        String str =
+                "{\"date\":\"\\\"date1\\\"\",\"supplier\":{\"address\":\"\\\"add1\\\"\",\"name\":\"\\\"testY\\\"\",\"class\":\"\\\"class1\\\"\"},\"ID\":\"\\\"idaaa\\\"\",\"order\":{\"bom\":\"\\\"bom1\\\"\",\"bomType\":\"\\\"bomType1\\\"\",\"version\":\"\\\"version1\\\"\"}}";
+        ObjectMapper objectMapper = new ObjectMapper();
+        JsonNode jsonNode = objectMapper.readTree(str);
+        jsonLeaf(jsonNode);
+        System.out.println(JacksonUtil.writeStr(jsonNode));
+
+        System.out.println("-----");
+        String str2 =
+                "[{\"date\":\"\\\"date2\\\"\",\"supplier\":{\"address\":\"\\\"add2\\\"\",\"name\":\"\\\"testy2\\\"\",\"class\":\"\\\"class2\\\"\"},\"ID\":\"\\\"idbbb\\\"\",\"order\":{\"bom\":\"\\\"bom2\\\"\",\"bomType\":\"\\\"bomeType2\\\"\",\"version\":\"'version'\"}}]";
+        ObjectMapper objectMapper1 = new ObjectMapper();
+        JsonNode jsonNode2 = objectMapper1.readTree(str2);
+        jsonLeaf(jsonNode2);
+        System.out.println(JacksonUtil.writeStr(jsonNode2));
+
+    }
+
+    /**
+     * 递归读取叶子节点的值
+     * refer to https://blog.csdn.net/dong8633950/article/details/109278537
+     *
+     * @throws IOException
+     */
+    @Test
+    public void readWriteLeafNode() throws IOException {
+        String str =
+                "{\"date\":\"\\\"date1\\\"\",\"supplier\":{\"address\":\"\\\"add1\\\"\",\"name\":\"\\\"testY\\\"\",\"class\":\"\\\"class1\\\"\"},\"ID\":\"\\\"idaaa\\\"\",\"order\":{\"bom\":\"\\\"bom1\\\"\",\"bomType\":\"\\\"bomType1\\\"\",\"version\":\"\\\"version1\\\"\"}}";
+        ObjectMapper objectMapper = new ObjectMapper();
+        JsonNode jsonNode = objectMapper.readTree(str);
+        jsonLeaf2(jsonNode);
+        System.out.println(JacksonUtil.writeStr(jsonNode));
+
+        System.out.println("-----");
+        String str2 =
+                "[{\"date\":\"\\\"date2\\\"\",\"supplier\":{\"address\":\"\\\"add2\\\"\",\"name\":\"\\\"testy2\\\"\",\"class\":\"\\\"class2\\\"\"},\"ID\":\"\\\"idbbb\\\"\",\"order\":{\"bom\":\"\\\"bom2\\\"\",\"bomType\":\"\\\"bomeType2\\\"\",\"version\":\"'version'\"}}]";
+        ObjectMapper objectMapper1 = new ObjectMapper();
+        JsonNode jsonNode2 = objectMapper1.readTree(str2);
+        jsonLeaf2(jsonNode2);
+        System.out.println(JacksonUtil.writeStr(jsonNode2));
+
+    }
+
+    /**
+     * only read values
+     * 
+     * @param node
+     */
+    public void jsonLeaf(JsonNode node) {
+        if (node.isValueNode()) {
+            System.out.println(node.toString());
+            return;
+        }
+
+        if (node.isObject()) {
+            Iterator<Map.Entry<String, JsonNode>> it = node.fields();
+            while (it.hasNext()) {
+                Map.Entry<String, JsonNode> entry = it.next();
+                jsonLeaf(entry.getValue());
+            }
+        }
+
+        if (node.isArray()) {
+            Iterator<JsonNode> it = node.iterator();
+            while (it.hasNext()) {
+                jsonLeaf(it.next());
+            }
+        }
+    }
+
+    /**
+     * read and write values
+     * 
+     * @param node
+     */
+    public static void jsonLeaf2(JsonNode node) {
+        if (node.isObject()) {
+            Iterator<Map.Entry<String, JsonNode>> it = node.fields();
+            while (it.hasNext()) {
+                Map.Entry<String, JsonNode> entry = it.next();
+                if (entry.getValue() instanceof TextNode && entry.getValue().isValueNode()) {
+                    TextNode t = (TextNode) entry.getValue();
+                    entry.setValue(new TextNode(t.asText() + "..."));
+                }
+
+                jsonLeaf2(entry.getValue());
+            }
+        }
+
+        if (node.isArray()) {
+            Iterator<JsonNode> it = node.iterator();
+            while (it.hasNext()) {
+                jsonLeaf2(it.next());
+            }
+        }
+    }
+
+
 
     /**
      * "options": {
@@ -191,7 +322,7 @@ public class JsonUtil {
         ObjectNode b = objectMapper.createObjectNode();
         b.put("x", 12);
         b.put("y", "#request['items'][0]['name']");
-        requestPayload.put("b", b);
+        requestPayload.set("b", b);
         // 加数组
         ArrayNode array = objectMapper.createArrayNode();
         array.add("13");

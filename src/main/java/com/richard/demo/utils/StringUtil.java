@@ -1,6 +1,6 @@
 package com.richard.demo.utils;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -32,6 +32,18 @@ public class StringUtil {
         System.out.println(StringUtils.join("a", "_", "c"));
 	}
 	
+    @Test
+    public void testSplit() {
+        String sonarCoverage =
+                "**/src/main/java/com/sap/dm/fnd/serviceregistry/executor/conditions/**,**/src/main/java/com/sap/dm/fnd/serviceregistry/executor/config/**,**/src/main/java/com/sap/dm/fnd/serviceregistry/executor/constants/**,**/src/main/java/com/sap/dm/fnd/serviceregistry/executor/dto/**,**/src/main/java/com/sap/dm/fnd/serviceregistry/executor/exception/**";
+        String soarExclusion =
+                "**/src/main/java/com/sap/dm/fnd/serviceregistry/executor/conditions/**,**/src/main/java/com/sap/dm/fnd/serviceregistry/executor/config/**,**/src/main/java/com/sap/dm/fnd/serviceregistry/executor/constants/**,**/src/main/java/com/sap/dm/fnd/serviceregistry/executor/dto/**,**/src/main/java/com/sap/dm/fnd/serviceregistry/executor/exception/**";
+        String[] files = sonarCoverage.split(",");
+        Arrays.stream(files).forEach(file -> {
+            System.out.println(file);
+        });
+    }
+
 	@Test
     public void testReplacement() {
         Assert.assertTrue(StringUtils.isNotEmpty(" "));
@@ -60,14 +72,14 @@ public class StringUtil {
 
     @Test
     public void testJoin() {
-        List<String> list = new ArrayList<String>();
-        System.out.println(StringUtils.join(list, ","));
-
-        list.add("anny");
-        list.add("zhangsan");
-        list.add("lisi");
-        list.add("wangwu");
-        System.out.println(StringUtils.join(list, ","));
+        // List<String> list = new ArrayList<String>();
+        // System.out.println(StringUtils.join(list, ","));
+        //
+        // list.add("anny");
+        // list.add("zhangsan");
+        // list.add("lisi");
+        // list.add("wangwu");
+        // System.out.println(StringUtils.join(list, ","));
 
     }
 

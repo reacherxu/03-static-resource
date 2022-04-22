@@ -12,6 +12,8 @@ import com.google.gson.stream.JsonToken;
 import lombok.extern.slf4j.Slf4j;
 
 /**
+ * refer to https://blog.csdn.net/revivedsun/article/details/103395128
+ * 
  * @author richard.xu03@sap.com
  * @version v 0.1 2022/4/2 12:15 PM richard.xu Exp $
  */
