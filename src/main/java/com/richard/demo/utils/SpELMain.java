@@ -30,7 +30,10 @@ public class SpELMain {
 
         String json1 =
                 "{\"text\":\"张三\",\"expensive\":6,\"body\":{\"rvNoNum\":23,\"rvNoRecords\":[{\"score\":4,\"rvAddress\":\"2\",\"consignments\":null},{\"score\":8,\"rvAddress\":\"3\",\"consignments\":true}],\"rvFamily\":{\"sex\":\"male\",\"number\":6}}}";
-        Map<String, Object> result = parseJson(json1);
+        String json2 = "[\"'variables[0][\\\"defaultValue\\\"]'\", \"'name'\"]";
+        String json3 =
+                "{\"baseQuantity\":\"'var_int'\",\"baseUnitOfMeasure\":\"'script_structureArray[0][\\\"baseQuantity\\\"]'\",\"bom\":\"'script_out_int'\",\"bomType\":\"'script_structure[\\\"baseQuantity\\\"]'\",\"components\":[{\"alternates\":[{\"enabled\":\"'script_structure[\\\"components\\\"][0][\\\"assemblyOperationActivity\\\"][\\\"version\\\"]'\",\"material\":{\"material\":\"'var_part_match_structure[\\\"components\\\"][0][\\\"alternates\\\"][0][\\\"enabled\\\"]'\"}}]}]}";
+        Map<String, Object> result = parseJson(json3);
         log.info("result is {}", JacksonUtil.writeStr(result));
     }
 
@@ -57,16 +60,19 @@ public class SpELMain {
                     reader.nextName();
                     break;
                 case STRING:
+                    String spath = reader.getPath();
                     String s = reader.nextString();
-                    printAndAdd(reader.getPath(), quote(s), flatResult);
+                    printAndAdd(spath, quote(s), flatResult);
                     break;
                 case NUMBER:
+                    String npath = reader.getPath();
                     String n = reader.nextString();
-                    printAndAdd(reader.getPath(), n, flatResult);
+                    printAndAdd(npath, n, flatResult);
                     break;
                 case BOOLEAN:
+                    String bpath = reader.getPath();
                     boolean b = reader.nextBoolean();
-                    printAndAdd(reader.getPath(), b, flatResult);
+                    printAndAdd(bpath, b, flatResult);
                     break;
                 case NULL:
                     reader.nextNull();

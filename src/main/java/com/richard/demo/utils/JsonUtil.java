@@ -10,8 +10,10 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
 
@@ -22,8 +24,13 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.BooleanNode;
+import com.fasterxml.jackson.databind.node.DoubleNode;
+import com.fasterxml.jackson.databind.node.IntNode;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.TextNode;
+import com.fasterxml.jackson.databind.node.ValueNode;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonParser;
 import com.jayway.jsonpath.Configuration;
@@ -221,22 +228,76 @@ public class JsonUtil {
     @Test
     public void readWriteLeafNode() throws IOException {
         String str =
-                "{\"date\":\"\\\"date1\\\"\",\"supplier\":{\"address\":\"\\\"add1\\\"\",\"name\":\"\\\"testY\\\"\",\"class\":\"\\\"class1\\\"\"},\"ID\":\"\\\"idaaa\\\"\",\"order\":{\"bom\":\"\\\"bom1\\\"\",\"bomType\":\"\\\"bomType1\\\"\",\"version\":\"\\\"version1\\\"\"}}";
+                "{\"date\":\"\\\"date1\\\"\",\"bool1\":true,\"int1\":1,\"double1\":1.98,\"supplier\":{\"address\":\"\\\"add1\\\"\",\"name\":\"\\\"testY\\\"\",\"class\":\"\\\"class1\\\"\"},\"ID\":\"\\\"idaaa\\\"\",\"order\":{\"bom\":\"\\\"bom1\\\"\",\"bomType\":\"\\\"bomType1\\\"\",\"version\":\"\\\"version1\\\"\"}}";
+        String str3 =
+                "{\"p4\":[\"#request['variables'][0]['name']\",\"abc\"],\"p1\":\"p1_test\",\"p5\":{\"date\":\"date1\",\"supplier\":{\"address\":\"add1\",\"name\":\"testY\",\"class\":\"class1\"},\"ID\":\"idaaa\",\"order\":{\"bom\":\"bom1\",\"bomType\":\"bomType1\",\"version\":\"version1\"}},\"p2\":2,\"p3\":true,\"p6\":[{\"date\":\"date2\",\"supplier\":{\"address\":\"add2\",\"name\":\"testy2\",\"class\":\"class2\"},\"ID\":\"idbbb\",\"order\":{\"bom\":\"bom2\",\"bomType\":\"bomeType2\",\"version\":\"#request['version']\"}}]}";
         ObjectMapper objectMapper = new ObjectMapper();
-        JsonNode jsonNode = objectMapper.readTree(str);
+        JsonNode jsonNode = objectMapper.readTree(str3);
         jsonLeaf2(jsonNode);
         System.out.println(JacksonUtil.writeStr(jsonNode));
 
-        System.out.println("-----");
-        String str2 =
-                "[{\"date\":\"\\\"date2\\\"\",\"supplier\":{\"address\":\"\\\"add2\\\"\",\"name\":\"\\\"testy2\\\"\",\"class\":\"\\\"class2\\\"\"},\"ID\":\"\\\"idbbb\\\"\",\"order\":{\"bom\":\"\\\"bom2\\\"\",\"bomType\":\"\\\"bomeType2\\\"\",\"version\":\"'version'\"}}]";
-        ObjectMapper objectMapper1 = new ObjectMapper();
-        JsonNode jsonNode2 = objectMapper1.readTree(str2);
-        jsonLeaf2(jsonNode2);
-        System.out.println(JacksonUtil.writeStr(jsonNode2));
-
+        // System.out.println("-----");
+        // String str2 =
+        // "[{\"date\":\"\\\"date2\\\"\",\"supplier\":{\"address\":\"\\\"add2\\\"\",\"name\":\"\\\"testy2\\\"\",\"class\":\"\\\"class2\\\"\"},\"ID\":\"\\\"idbbb\\\"\",\"order\":{\"bom\":\"\\\"bom2\\\"\",\"bomType\":\"\\\"bomeType2\\\"\",\"version\":\"'version'\"}}]";
+        // ObjectMapper objectMapper1 = new ObjectMapper();
+        // JsonNode jsonNode2 = objectMapper1.readTree(str2);
+        // jsonLeaf2(jsonNode2);
+        // System.out.println(JacksonUtil.writeStr(jsonNode2));
     }
 
+    /**
+     * read and write values
+     *
+     * @param node
+     */
+    public static void jsonLeaf2(JsonNode node) {
+
+
+        if (node.isObject()) {
+            Iterator<Map.Entry<String, JsonNode>> it = node.fields();
+            while (it.hasNext()) {
+                Map.Entry<String, JsonNode> entry = it.next();
+                if (entry.getValue() instanceof ValueNode && entry.getValue().isValueNode()) {
+                    ValueNode t = (ValueNode) entry.getValue();
+                    entry.setValue(new TextNode(t.asText() + "。。。。"));
+
+                    // setPrimitiveValue(entry, t);
+                } else {
+                    jsonLeaf2(entry.getValue());
+                }
+
+            }
+        }
+
+        if (node.isArray()) {
+            Iterator<JsonNode> it = node.iterator();
+            while (it.hasNext()) {
+                jsonLeaf2(it.next());
+
+            }
+
+        }
+    }
+
+    private static void setPrimitiveValue(Map.Entry<String, JsonNode> entry, ValueNode t) {
+        switch (t.getNodeType()) {
+            case BOOLEAN:
+                entry.setValue(BooleanNode.valueOf(t.asBoolean()));
+                break;
+            case BINARY:
+            case NUMBER:
+                if (t.asText().contains(".")) {
+                    entry.setValue(new DoubleNode(t.asDouble()));
+                } else {
+                    entry.setValue(new IntNode(t.asInt()));
+                }
+                break;
+            case STRING:
+            default:
+                entry.setValue(new TextNode(t.asText()));
+
+        }
+    }
     /**
      * only read values
      * 
@@ -264,34 +325,79 @@ public class JsonUtil {
         }
     }
 
-    /**
-     * read and write values
-     * 
-     * @param node
-     */
-    public static void jsonLeaf2(JsonNode node) {
-        if (node.isObject()) {
-            Iterator<Map.Entry<String, JsonNode>> it = node.fields();
-            while (it.hasNext()) {
-                Map.Entry<String, JsonNode> entry = it.next();
-                if (entry.getValue() instanceof TextNode && entry.getValue().isValueNode()) {
-                    TextNode t = (TextNode) entry.getValue();
-                    entry.setValue(new TextNode(t.asText() + "..."));
+
+
+    // 不支持直接的array
+    public static void parseExpression(JsonNode jsonNode) {
+        Iterator<Map.Entry<String, JsonNode>> it = jsonNode.fields();
+        while (it.hasNext()) {
+            Map.Entry<String, JsonNode> entry = it.next();
+            JsonNode entryValue = entry.getValue();
+            if (entryValue.isObject()) {
+                parseExpression(entryValue);
+            } else if (entryValue.isArray()) {
+                parseArrayNode(entryValue, entry);
+            } else {
+
+
+                String varA = entryValue.asText();
+                log.debug("[ExtensionServiceExecutor#parseExpression]  value: {}", varA);
+
+                // Object value;
+                // if (!varA.contains("#")) {
+                // // for constant value, no need to use spel
+                // value = varA;
+                // } else {
+                // // for variable , use spel to parse value
+                // // value = parser.parseExpression(varA).getValue(extensionPointContext, Object.class);
+                // log.debug("[ExtensionServiceExecutor#parseExpression] Expression {}, value: {}", varA);
+                // }
+                if (Objects.nonNull(varA)) {
+                    entry.setValue(TextNode.valueOf(varA.toString()));
                 }
-
-                jsonLeaf2(entry.getValue());
-            }
-        }
-
-        if (node.isArray()) {
-            Iterator<JsonNode> it = node.iterator();
-            while (it.hasNext()) {
-                jsonLeaf2(it.next());
             }
         }
     }
 
+    private static void parseArrayNode(JsonNode entryValue, Map.Entry<String, JsonNode> entry) {
+        List<JsonNode> c = new ArrayList<>();
+        for (JsonNode n : entryValue) {
+            if (n.isObject()) {
+                parseExpression(n);
+            } else {
+                String text = n.asText();
+                // Object value = parser.parseExpression(text).getValue(extensionPointContext, Object.class);
+                log.debug("[ExtensionServiceExecutor#parseArrayNode] Expression {}", n.asText());
+                if (Objects.nonNull(text)) {
+                    c.add(TextNode.valueOf(text.toString()));
+                }
+            }
+        }
+        if (CollectionUtils.isNotEmpty(c)) {
+            entry.setValue(new ArrayNode(JsonNodeFactory.instance, c));
+        }
+    }
 
+    @Test
+    public void testParseExpression() throws IOException {
+
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        // 对象里面简单类型
+        String str0 = "{\"var1\":11}";
+        JsonNode jsonNode0 = objectMapper.readTree(str0);
+        parseExpression(jsonNode0);
+
+        // 对象里面嵌套数组
+        String str1 = "{\"var1\":[1,2,3]}";
+        JsonNode jsonNode1 = objectMapper.readTree(str1);
+        parseExpression(jsonNode1);
+
+        String str3 =
+                "{\"p4\":[\"#request['variables'][0]['name']\"],\"p1\":\"p1_test\",\"p5\":{\"date\":\"date1\",\"supplier\":{\"address\":\"add1\",\"name\":\"testY\",\"class\":\"class1\"},\"ID\":\"idaaa\",\"order\":{\"bom\":\"bom1\",\"bomType\":\"bomType1\",\"version\":\"version1\"}},\"p2\":2,\"p3\":true,\"p6\":[{\"date\":\"date2\",\"supplier\":{\"address\":\"add2\",\"name\":\"testy2\",\"class\":\"class2\"},\"ID\":\"idbbb\",\"order\":{\"bom\":\"bom2\",\"bomType\":\"bomeType2\",\"version\":\"#request['version']\"}}]}";
+        JsonNode jsonNode3 = objectMapper.readTree(str3);
+        parseExpression(jsonNode3);
+    }
 
     /**
      * "options": {
