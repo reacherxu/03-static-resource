@@ -42,7 +42,7 @@ public class AspectDemo {
      */
     @Before(value = "logPointCut() && @annotation(login)")
     public void check(Login login) {
-        System.out.println("==@Before==checking.........." + login.username());
+        log.info("==@Before==checking.........." + login.username());
         daoA.queryOrderList();
     }
 
@@ -51,7 +51,7 @@ public class AspectDemo {
      */
     @AfterReturning("logPointCut()")
     public void afterReturning() {
-        System.out.println("==@AfterReturning== after returning without errors");
+        log.info("==@AfterReturning== after returning without errors");
     }
 
     /**
@@ -59,7 +59,7 @@ public class AspectDemo {
      */
     @After(value = "logPointCut()")
     public void bye(){
-        System.out.println("==@After==bye bye............");
+        log.info("==@After==bye bye............");
     }
 
     /**
@@ -67,7 +67,7 @@ public class AspectDemo {
      */
     @AfterThrowing("logPointCut()")
     public void afterThrowing() {
-        System.out.println("==@AfterThrowing== after throwing errors");
+        log.info("==@AfterThrowing== after throwing errors");
     }
 
     /**
@@ -81,14 +81,14 @@ public class AspectDemo {
         Object[] params = joinPoint.getArgs();
         log.info("input param size is {}, params are {}", params.length, JacksonUtil.writeStr(params));
         Login login = getDeclaredAnnotation(joinPoint);
-        System.out.println("==@Around==  ");
+        log.info("==@Around==  ");
         // 执行源方法
         joinPoint.proceed();
         // 模拟进行验证
         if (params != null && params.length > 0 && params[0].equals("Blog Home")) {
-            System.out.println("==@Around== logger auth success, password is " + login.password() );
+            log.info("==@Around== logger auth success, password is " + login.password());
         } else {
-            System.out.println("==@Around== logger auth failed " );
+            log.info("==@Around== logger auth failed ");
         }
 
     }
