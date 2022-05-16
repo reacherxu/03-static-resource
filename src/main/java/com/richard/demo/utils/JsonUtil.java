@@ -20,6 +20,7 @@ import org.junit.Test;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -195,7 +196,7 @@ public class JsonUtil {
     }
 
     /**
-     * 递归读取叶子节点的值
+     * 递归读取,并修改叶子节点的值
      * refer to https://www.cnblogs.com/witpool/p/8444700.html
      *
      * @throws IOException
@@ -204,18 +205,19 @@ public class JsonUtil {
     public void readLeafNode() throws IOException {
         String str =
                 "{\"date\":\"\\\"date1\\\"\",\"supplier\":{\"address\":\"\\\"add1\\\"\",\"name\":\"\\\"testY\\\"\",\"class\":\"\\\"class1\\\"\"},\"ID\":\"\\\"idaaa\\\"\",\"order\":{\"bom\":\"\\\"bom1\\\"\",\"bomType\":\"\\\"bomType1\\\"\",\"version\":\"\\\"version1\\\"\"}}";
+        log.info("before translation : {}", str);
         ObjectMapper objectMapper = new ObjectMapper();
         JsonNode jsonNode = objectMapper.readTree(str);
         jsonLeaf(jsonNode);
-        System.out.println(JacksonUtil.writeStr(jsonNode));
+        log.info("after translation : {}", JacksonUtil.writeStr(jsonNode));
 
-        System.out.println("-----");
         String str2 =
-                "[{\"date\":\"\\\"date2\\\"\",\"supplier\":{\"address\":\"\\\"add2\\\"\",\"name\":\"\\\"testy2\\\"\",\"class\":\"\\\"class2\\\"\"},\"ID\":\"\\\"idbbb\\\"\",\"order\":{\"bom\":\"\\\"bom2\\\"\",\"bomType\":\"\\\"bomeType2\\\"\",\"version\":\"'version'\"}}]";
+                "[{\"date\":\"\\\"date2\\\"\",\"supplier\":{\"address\":\"\\\"add2\\\"\",\"stores\":[{\"assistances\":[\"\\\"aaa\\\"\",\"'version'\"]}],\"name\":\"\\\"testy2\\\"\",\"class\":\"\\\"class2\\\"\"},\"ID\":\"\\\"idbbb\\\"\",\"order\":{\"bom\":\"\\\"bom2\\\"\",\"bomType\":\"\\\"bomeType2\\\"\",\"version\":\"'version'\"}}]";
+        log.info("before translation : {}", str2);
         ObjectMapper objectMapper1 = new ObjectMapper();
         JsonNode jsonNode2 = objectMapper1.readTree(str2);
         jsonLeaf(jsonNode2);
-        System.out.println(JacksonUtil.writeStr(jsonNode2));
+        log.info("after translation : {}", JacksonUtil.writeStr(jsonNode2));
 
     }
 
@@ -298,33 +300,51 @@ public class JsonUtil {
 
         }
     }
+    
     /**
-     * only read values
+     * read and write values
      * 
      * @param node
      */
-    public void jsonLeaf(JsonNode node) {
-        if (node.isValueNode()) {
-            System.out.println(node.toString());
-            return;
-        }
-
+    public void jsonLeaf(JsonNode node) throws JsonProcessingException {
         if (node.isObject()) {
             Iterator<Map.Entry<String, JsonNode>> it = node.fields();
             while (it.hasNext()) {
                 Map.Entry<String, JsonNode> entry = it.next();
-                jsonLeaf(entry.getValue());
+                if (entry.getValue() instanceof TextNode && entry.getValue().isValueNode()) {
+                    TextNode t = (TextNode) entry.getValue();
+                    stripValueNode(entry, t);
+                } else {
+                    jsonLeaf(entry.getValue());
+                }
             }
         }
 
+
         if (node.isArray()) {
             Iterator<JsonNode> it = node.iterator();
-            while (it.hasNext()) {
-                jsonLeaf(it.next());
+            for (int i = 0; it.hasNext(); i++) {
+                JsonNode arrayNode = it.next();
+                if (arrayNode instanceof TextNode) {
+                    String value = removeDoubleQuote(arrayNode.textValue());
+                    ((ArrayNode) node).set(i, new TextNode(value));
+                } else {
+                    jsonLeaf(arrayNode);
+                }
             }
         }
     }
 
+    private void stripValueNode(Map.Entry<String, JsonNode> entry, TextNode t) throws JsonProcessingException {
+        String textValue = t.asText();
+        entry.setValue(new TextNode(removeDoubleQuote(textValue)));
+    }
+
+    public static final String DOUBLE_QUOTE = "\"";
+
+    public String removeDoubleQuote(String var) {
+        return var.startsWith(DOUBLE_QUOTE) && var.endsWith(DOUBLE_QUOTE) ? var.substring(1, var.length() - 1) : var;
+    }
 
 
     // 不支持直接的array
