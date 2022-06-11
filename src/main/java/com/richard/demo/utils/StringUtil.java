@@ -35,7 +35,7 @@ public class StringUtil {
     @Test
     public void testSplit() {
         String sonarCoverage =
-                "**/src/main/java/com/sap/dm/fnd/serviceregistry/executor/conditions/**,**/src/main/java/com/sap/dm/fnd/serviceregistry/executor/config/**,**/src/main/java/com/sap/dm/fnd/serviceregistry/executor/constants/**,**/src/main/java/com/sap/dm/fnd/serviceregistry/executor/dto/**,**/src/main/java/com/sap/dm/fnd/serviceregistry/executor/exception/**";
+                "**/src/main/java/sap/dm/sfd/lib/commons/feign/*,**/src/main/java/sap/dm/sfd/lib/commons/auditlog/*,**/src/main/java/sap/dm/sfd/lib/commons/constants/*,**/src/main/java/sap/dm/sfd/lib/commons/converter/*,**/src/main/java/sap/dm/sfd/lib/commons/entity/*,**/src/main/java/sap/dm/sfd/lib/commons/enums/*,**src/main/java/sap/dm/sfd/lib/commons/kafka/*,**/src/main/java/sap/dm/sfd/lib/commons/kafka/**/*,**/src/main/java/sap/dm/sfd/lib/commons/validator/*,**/src/main/java/sap/dm/sfd/lib/commons/config/*,**/src/main/java/sap/dm/sfd/lib/commons/exception/*,**/src/main/java/sap/dm/sfd/lib/commons/security/*,**/src/main/java/sap/dm/sfd/lib/commons/service/*,**/src/main/java/sap/dm/sfd/lib/commons/migration/*";
         String soarExclusion =
                 "**/src/main/java/com/sap/dm/fnd/serviceregistry/executor/conditions/**,**/src/main/java/com/sap/dm/fnd/serviceregistry/executor/config/**,**/src/main/java/com/sap/dm/fnd/serviceregistry/executor/constants/**,**/src/main/java/com/sap/dm/fnd/serviceregistry/executor/dto/**,**/src/main/java/com/sap/dm/fnd/serviceregistry/executor/exception/**";
         String[] files = sonarCoverage.split(",");

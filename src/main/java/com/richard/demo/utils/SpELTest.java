@@ -191,6 +191,10 @@ public class SpELTest {
         // 获取name变量，lesson变量
         String name = parser.parseExpression("#name").getValue(context, String.class);
         System.out.println(name);
+        parser.parseExpression("#name").setValue(context, "路人甲python");
+        String name1 = parser.parseExpression("#name").getValue(context, String.class);
+        System.out.println("after changing primitive type, name is " + name1);
+
         String lesson = parser.parseExpression("#lesson").getValue(context, String.class);
         System.out.println(lesson);
 
