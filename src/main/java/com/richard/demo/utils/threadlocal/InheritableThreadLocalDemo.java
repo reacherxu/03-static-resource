@@ -1,8 +1,13 @@
 package com.richard.demo.utils.threadlocal;
 
+import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
+
+import org.slf4j.MDC;
+
+import com.richard.demo.utils.util.MDCUtil;
 
 /**
  * @author richard.xu03@sap.com
@@ -15,15 +20,18 @@ public class InheritableThreadLocalDemo {
     private static InheritableThreadLocal<String> inheritableThreadLocal = new InheritableThreadLocal<>();
 
     public static void main(String[] args) throws ExecutionException, InterruptedException {
-        testThreadLocal();
-
-        testInheritableThreadLocal();
+        MDC.put("correlation_id", "correlation1");
+        // testThreadLocal();
+        //
+        // testInheritableThreadLocal();
 
         // 通过Callable和FutureTask创建线程
+        threadLocal.set("mainThread");
         System.out.println("[Main]Main thread is " + Thread.currentThread().getName());
         testCallable();
         System.out.println("[Main] end");
     }
+
 
 
 
@@ -80,7 +88,8 @@ public class InheritableThreadLocalDemo {
      * @throws InterruptedException
      */
     private static void testCallable() throws ExecutionException, InterruptedException {
-        Callable<String> oneCallable = new Tickets<>();
+        // 不同线程间复制线程上下文
+        Callable<String> oneCallable = new Tickets<>(MDC.getCopyOfContextMap());
         FutureTask<String> oneTask = new FutureTask<>(oneCallable);
         Thread t = new Thread(oneTask);
         System.out.println("[testCallable]" + Thread.currentThread().getName());
@@ -93,11 +102,17 @@ public class InheritableThreadLocalDemo {
 
 
 class Tickets<String> implements Callable<String> {
+    Map<java.lang.String, java.lang.String> copyOfContextMap;
+
+    public Tickets(Map<java.lang.String, java.lang.String> copyOfContextMap) {
+        this.copyOfContextMap = copyOfContextMap;
+    }
 
     // 重写call方法
     @Override
     public String call() throws Exception {
-        System.out.println(Thread.currentThread().getName() + "-->我是通过实现Callable接口通过FutureTask包装器来实现的线程");
+        MDCUtil.setMDCContextMap(copyOfContextMap);
+        System.out.println(Thread.currentThread().getName() + "-->我是通过实现Callable接口通过FutureTask包装器来实现的线程," + MDC.get("correlation_id"));
         return (String) "tst01";
     }
 }
