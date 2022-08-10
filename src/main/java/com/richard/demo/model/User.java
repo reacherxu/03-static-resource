@@ -4,6 +4,10 @@
  */
 package com.richard.demo.model;
 
+import java.util.List;
+
+import javax.validation.Valid;
+
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -29,4 +33,6 @@ public class User {
     private int age;
     private String address;
 
+    @Valid
+    private List<Family> familyList;
 }

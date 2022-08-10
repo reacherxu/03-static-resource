@@ -20,6 +20,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -52,6 +53,7 @@ import rx.schedulers.Schedulers;
 @RestController
 @Slf4j
 @RequiredArgsConstructor
+@Validated
 public class HelloWorldController {
 
     @Autowired
@@ -74,6 +76,13 @@ public class HelloWorldController {
             entry.getValue().queryOrderList();
         }
         return map;
+    }
+
+    @PostMapping(value = "/validate")
+    @ResponseBody
+    public User validate(@RequestBody @Valid User user) {
+
+        return user;
     }
 
     @Autowired
