@@ -9,11 +9,14 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.FutureTask;
 
 import javax.validation.Valid;
 
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationContext;
@@ -31,6 +34,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.richard.demo.enums.OrderType;
+import com.richard.demo.model.Tickets;
 import com.richard.demo.model.User;
 import com.richard.demo.services.OrderInfoDao;
 import com.richard.demo.services.RetryService;
@@ -66,11 +70,19 @@ public class HelloWorldController {
      */
     @GetMapping(value = "/hello")
     @ResponseBody
-    public Map<String, Object> helloWorld() {
+    public Map<String, Object> helloWorld() throws ExecutionException, InterruptedException {
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("msg", "ok");
 
-        System.out.println("--------------map--------------");
+        // 不同线程间复制线程上下文
+        Callable<String> oneCallable = new Tickets<>(MDC.getCopyOfContextMap());
+        FutureTask<String> oneTask = new FutureTask<>(oneCallable);
+        Thread t = new Thread(oneTask);
+        System.out.println("[testCallable]" + Thread.currentThread().getName());
+        t.start();
+        System.out.println("[testCallable]" + oneTask.get());
+
+        System.out.println("--------------map--------------" + Thread.currentThread().getId());
         for (Map.Entry<String, OrderInfoDao> entry : multiServiceMap.entrySet()) {
             System.out.println("key=" + entry.getKey());
             entry.getValue().queryOrderList();

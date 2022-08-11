@@ -1,13 +1,12 @@
 package com.richard.demo.utils.threadlocal;
 
-import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
 
 import org.slf4j.MDC;
 
-import com.richard.demo.utils.util.MDCUtil;
+import com.richard.demo.model.Tickets;
 
 /**
  * @author richard.xu03@sap.com
@@ -101,18 +100,4 @@ public class InheritableThreadLocalDemo {
 }
 
 
-class Tickets<String> implements Callable<String> {
-    Map<java.lang.String, java.lang.String> copyOfContextMap;
 
-    public Tickets(Map<java.lang.String, java.lang.String> copyOfContextMap) {
-        this.copyOfContextMap = copyOfContextMap;
-    }
-
-    // 重写call方法
-    @Override
-    public String call() throws Exception {
-        MDCUtil.setMDCContextMap(copyOfContextMap);
-        System.out.println(Thread.currentThread().getName() + "-->我是通过实现Callable接口通过FutureTask包装器来实现的线程," + MDC.get("correlation_id"));
-        return (String) "tst01";
-    }
-}
