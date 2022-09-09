@@ -12,6 +12,9 @@ import org.junit.Test;
 
 import com.google.common.collect.Lists;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class StringUtil {
 
 	/**
@@ -42,6 +45,8 @@ public class StringUtil {
         Arrays.stream(files).forEach(file -> {
             System.out.println(file);
         });
+        log.info("pe-ms/0b3b82c9-9967-46e5-85f8-60671a2354d9/pe/archive/{date}/{0-24}/tableName".split("/")[4]);
+
     }
 
 	@Test
@@ -65,6 +70,10 @@ public class StringUtil {
 	public void testStringFormat() {
 		String info = String.format("%s : %s","time",new Date());
 		System.out.println(info);
+
+        String prefix = String.format("%s/%s/pe/archive/", "pe-ms", "0b3b82c9-9967-46e5-85f8-60671a2354d9");
+        System.out.println(prefix);
+
 
         List<String> indicators = Lists.newArrayList("name1", "name2");
         System.out.println(StringUtils.join(indicators, ","));
