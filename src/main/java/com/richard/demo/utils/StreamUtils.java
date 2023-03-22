@@ -4,30 +4,23 @@
  */
 package com.richard.demo.utils;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.junit.Test;
-import org.springframework.beans.BeanUtils;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.junit.Test;
+import org.springframework.beans.BeanUtils;
 import rx.Observable;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
+
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  *
@@ -202,6 +195,9 @@ public class StreamUtils {
     @Test
     public void testMap3() {
         List<String> list = Arrays.asList("1", "2", "3", "1", "1");
+        long count = list.stream().filter(p -> Integer.valueOf(p) < 3).count();
+        log.info(" count的个数是 {} ", count);
+
         // 先筛选，再转化成map
         List<String> list1 = list.stream().filter(p -> Integer.valueOf(p) < 3).collect(Collectors.toList());
         log.info(" filer之后的简约写法 {} ", list1);

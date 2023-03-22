@@ -1,9 +1,10 @@
 package com.richard.demo.utils;
 
 import java.io.*;
-import java.nio.charset.Charset;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.zip.Deflater;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -159,20 +160,24 @@ public class FileUtil {
         // zipFiles(Arrays.asList(file), new File(getTempLoaction() + "/" + dir + ".zip"));
 
         // 不存文件的压缩方式
-        String before = readFromFile(getTempLoaction() + "test2.txt");
+        // String before = readFromFile(getTempLoaction() + "test2.txt");
+        //
+        // byte[] bytes = zipByteArrayOutputStream(before.getBytes(), "test.zip");
+        // System.out.println(new String(bytes, Charset.defaultCharset()));
+        // FileUtil.writeFile(new String(bytes, Charset.defaultCharset()), FileUtil.getTempLoaction() +
+        // "test10.txt");
+        //
+        // ByteArrayInputStream bin = new ByteArrayInputStream(bytes);
+        //
+        // byte[] byte1 = uncompress(bin);
+        // FileUtil.writeFile(new String(byte1, Charset.defaultCharset()), FileUtil.getTempLoaction() +
+        // "test11.txt");
+        //
+        // System.out.println(new String(byte1, Charset.defaultCharset()));
+        //
+        // readFromFile(FileUtil.getTempLoaction() + "test2.txt");
 
-        byte[] bytes = zipByteArrayOutputStream(before.getBytes(), "test.zip");
-        System.out.println(new String(bytes, Charset.defaultCharset()));
-        FileUtil.writeFile(new String(bytes, Charset.defaultCharset()), FileUtil.getTempLoaction() + "test10.txt");
-
-        ByteArrayInputStream bin = new ByteArrayInputStream(bytes);
-
-        byte[] byte1 = uncompress(bin);
-        FileUtil.writeFile(new String(byte1, Charset.defaultCharset()), FileUtil.getTempLoaction() + "test11.txt");
-
-        System.out.println(new String(byte1, Charset.defaultCharset()));
-
-        readFromFile(FileUtil.getTempLoaction() + "test2.txt");
+        readFileByLines(FileUtil.getTempLoaction() + "tenant failure.txt");
     }
 
     /**
@@ -215,6 +220,51 @@ public class FileUtil {
         return sb.toString();
     }
 
+
+
+    public static void readFileByLines(String fileName) {
+
+        File file = new File(fileName);
+        BufferedReader reader = null;
+        try {
+            System.out.println("以行为单位读取文件内容，一次读一行");
+            reader = new BufferedReader(new FileReader(file));
+            String tempString = null;
+            int line = 1;
+            Map<String, String> map = new HashMap();
+            while ((tempString = reader.readLine()) != null) {
+                String tenant[] = tempString.split(" ");
+                map.put(tenant[0], tenant[1]);
+                line++;
+            }
+
+            reader.close();
+            System.out.println("map size is " + map.size());
+            System.out.println(JacksonUtil.writeStr(map));
+        } catch (IOException e) {
+
+            e.printStackTrace();
+
+        } finally {
+
+            if (reader != null) {
+
+                try {
+
+                    reader.close();
+
+                } catch (IOException e1) {
+
+                    e1.printStackTrace();
+
+                }
+
+            }
+
+        }
+
+    }
+
     /**
      * 文件流压缩
      * 
@@ -246,6 +296,7 @@ public class FileUtil {
             }
             zipOut.closeEntry();
             result = baos.toByteArray();
+
         } catch (IOException e) {
             log.error("[zipByteArrayOutputStream] zip file failed, file name is {}", fileName);
         }

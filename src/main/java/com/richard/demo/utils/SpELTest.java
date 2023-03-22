@@ -1,27 +1,22 @@
 package com.richard.demo.utils;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.context.expression.BeanFactoryResolver;
 import org.springframework.context.expression.MapAccessor;
-import org.springframework.expression.EvaluationContext;
-import org.springframework.expression.EvaluationException;
-import org.springframework.expression.Expression;
-import org.springframework.expression.ExpressionParser;
-import org.springframework.expression.ParseException;
+import org.springframework.core.convert.TypeDescriptor;
+import org.springframework.expression.*;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.Lists;
 import com.google.gson.Gson;
 import com.richard.demo.services.impl.OrderInfoDaoAImpl;
 import com.richard.demo.utils.pojos.SubClass1;
@@ -321,14 +316,14 @@ public class SpELTest {
 
     // 解析json 对象
     @Test
-    public void testJsonObject() throws IOException {
+    public void testJsonObject() throws IOException, ClassNotFoundException {
         ExpressionParser responseParser = new SpelExpressionParser();
         Gson gson = new Gson();
         String json =
-                "{\"text\":\"张三\",\"expensive\":6,\"body\":{\"rvNoNum\":23,\"rvNoRecords\":[{\"score\":4,\"rvAddress\":\"2\",\"consignments\":null},{\"score\":8,\"rvAddress\":\"3\",\"consignments\":null}]}}";
+                "{\"text\":\"张三\",\"expensive\":6,\"body\":{\"rvNoNum\":23,\"rvlist\":[1,2,3],\"rvNoRecords\":[{\"score\":4,\"rvAddress\":\"2\",\"consignments\":null},{\"score\":8,\"rvAddress\":\"3\",\"consignments\":null}]}}";
 
         Map<String, Object> realResponse = gson.fromJson(json, Map.class);
-        // ObjectMapper objectMapper = new ObjectMapper();
+        ObjectMapper objectMapper = new ObjectMapper();
         // JsonNode realResponse = objectMapper.readTree(json);
 
         EvaluationContext responseContext = new StandardEvaluationContext();
@@ -337,6 +332,35 @@ public class SpELTest {
         String testVal1 = responseParser.parseExpression("#response['text']").getValue(responseContext, String.class);
         // 对象属性
         String testVal2 = responseParser.parseExpression("#response['body']['rvNoNum']").getValue(responseContext, String.class);
+
+        // Class clazz =
+        // responseParser.parseExpression("#response['body']['rvNoRecord']").getValueType(responseContext);
+        Object value = responseParser.parseExpression("#response['body']['rvlist']").getValue(responseContext, Object.class);
+        if (StringUtils.equalsAny(value.getClass().getName(), "java.util.ArrayList")) {
+            TypeDescriptor typeDescriptor1 =
+                    responseParser.parseExpression("#response['body']['rvlist'][0]").getValueTypeDescriptor(responseContext);
+            // is primitive or not
+            log.info("is map {}", typeDescriptor1.isMap());
+            Collection listA = (Collection) value;
+            ArrayList listB = Lists.newArrayList(1.0, 2.0);
+            log.info("have collection {}", CollectionUtils.intersection(listA, listB));
+        }
+
+        Object value2 = responseParser.parseExpression("#response['body']['rvNoRecords']").getValue(responseContext, Object.class);
+        if (StringUtils.equalsAny(value2.getClass().getName(), "java.util.ArrayList")) {
+            Collection listC = (Collection) value2;
+            int size = ((Collection<?>) value2).size();
+            log.info("size is {}", ((Collection<?>) value2).size());
+            TypeDescriptor typeDescriptor =
+                    responseParser.parseExpression("#response['body']['rvNoRecords'][0]").getValueTypeDescriptor(responseContext);
+            log.info("is map {}", typeDescriptor.isMap());
+            for (int i = 0; i < size; i++) {
+                Object value3 = responseParser.parseExpression("#response['body']['rvNoRecords'][" + i + "]['score']")
+                        .getValue(responseContext, Object.class);
+                log.info("score is {}", value3);
+            }
+        }
+
         // 数组属性
         String testVal3 =
                 responseParser.parseExpression("#response['body']['rvNoRecords'][1]['score']").getValue(responseContext, String.class);

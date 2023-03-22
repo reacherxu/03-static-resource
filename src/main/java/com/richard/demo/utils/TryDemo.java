@@ -11,12 +11,20 @@ public class TryDemo {
 
     public static String test1() {
         try {
+            testReturn(10);
             log.info("try......");
         } finally {
             log.info("finally......");
         }
         log.info("after finally....");
         return "test1";
+    }
+
+    private static void testReturn(int i) {
+        if (i == 10) {
+            return;
+        }
+        log.info("testReturn");
     }
 
     public static void main(String[] args) {

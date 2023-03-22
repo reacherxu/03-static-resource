@@ -1,18 +1,16 @@
 package com.richard.demo.utils;
 
+import com.google.common.collect.Lists;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.junit.Assert;
+import org.junit.Test;
+
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import org.apache.commons.lang3.StringUtils;
-import org.junit.Assert;
-import org.junit.Test;
-
-import com.google.common.collect.Lists;
-
-import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class StringUtil {
@@ -68,6 +66,9 @@ public class StringUtil {
 	 */
 	@Test
 	public void testStringFormat() {
+        System.out.println("time is " + System.currentTimeMillis() + "len is " + String.valueOf(System.currentTimeMillis()).length());
+
+
 		String info = String.format("%s : %s","time",new Date());
 		System.out.println(info);
 
@@ -77,6 +78,9 @@ public class StringUtil {
 
         List<String> indicators = Lists.newArrayList("name1", "name2");
         System.out.println(StringUtils.join(indicators, ","));
+
+
+
 	}
 
     @Test
@@ -89,7 +93,13 @@ public class StringUtil {
         // list.add("lisi");
         // list.add("wangwu");
         // System.out.println(StringUtils.join(list, ","));
+        String nameStr = "Process_Instance_Archive-2022-09-17.zip".split("\\.")[0];
+        log.info(nameStr);
+        log.info(nameStr.replace("Process_Instance_Archive-", ""));
 
+        String nameStr1 = "2022-09-17.zip".split("\\.")[0];
+        log.info(nameStr1);
+        log.info(nameStr1.replace("Process_Instance_Archive-", ""));
     }
 
 }
