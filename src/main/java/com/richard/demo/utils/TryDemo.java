@@ -1,5 +1,10 @@
 package com.richard.demo.utils;
 
+import org.springframework.boot.SpringBootVersion;
+import org.springframework.core.SpringVersion;
+
+import com.richard.demo.enums.OrderType;
+
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -9,10 +14,11 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class TryDemo {
 
-    public static String test1() {
+    public static String test1(int i) {
         try {
-            testReturn(10);
-            log.info("try......");
+            OrderType type1 = OrderType.OrderA;
+            testReturn(i, type1);
+            log.info("try......,type1 is {}", type1);
         } finally {
             log.info("finally......");
         }
@@ -20,14 +26,16 @@ public class TryDemo {
         return "test1";
     }
 
-    private static void testReturn(int i) {
+    private static void testReturn(int i, OrderType type1) {
         if (i == 10) {
+            type1 = OrderType.OrderB;
             return;
         }
         log.info("testReturn");
     }
 
     public static void main(String[] args) {
-        log.info(test1());
+        log.info("spring version {}, springboot version {}", SpringVersion.getVersion(), SpringBootVersion.getVersion());
+        log.info(test1(10));
     }
 }

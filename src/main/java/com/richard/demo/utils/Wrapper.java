@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.ImmutableTriple;
+import org.apache.commons.lang3.tuple.MutablePair;
 import org.junit.Test;
 
 import com.google.gson.Gson;
@@ -37,5 +38,16 @@ public class Wrapper {
         ImmutableTriple<Integer, String, Date> triple = ImmutableTriple.of(1, "yideng", new Date());
         // 输出 1,yideng,Wed Apr 07 23:30:00 CST 2021
         System.out.println(triple.getLeft() + "," + triple.getMiddle() + "," + triple.getRight());
+
+    }
+
+    @Test
+    public void testReturnTempResponse() {
+
+        MutablePair<Integer, String> pair1 = MutablePair.of(1, "yideng");
+        System.out.println(pair1.getLeft() + "," + "," + pair1.getRight());
+        pair1.setLeft(2);
+        pair1.setRight("yideng2");
+        System.out.println(pair1.getLeft() + "," + "," + pair1.getRight());
     }
 }
