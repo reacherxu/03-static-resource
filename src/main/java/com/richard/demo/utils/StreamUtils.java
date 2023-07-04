@@ -4,10 +4,7 @@
  */
 package com.richard.demo.utils;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.ToString;
+import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
@@ -168,7 +165,8 @@ public class StreamUtils {
     @Test
     public void testMap2() {
         List<Person> persons =
-                Arrays.asList(new Person("Max", 18), new Person("Peter", 23), new Person("Pamela", 23), new Person("David", 12));
+                Arrays.asList(new Person("Max", 18, "BJ"), new Person("Peter", 23, "BJ"), new Person("Pamela", 23, "BJ"),
+                        new Person("David", 12, "SH"));
 
         // 没有工具的写法
         Map<Integer, List<Person>> ageMap = new HashMap<>();
@@ -186,6 +184,11 @@ public class StreamUtils {
         // 简约的写法
         Map<Integer, List<Person>> ageMap2 = persons.stream().collect(Collectors.groupingBy(Person::getAge));
         log.info(" 简约的写法 {} ", ageMap2.toString());
+        // 也可以组合形成key
+        Map<String, List<Person>> ageMap2_1 = persons.stream().collect(Collectors.groupingBy(person -> {
+            return person.getAddress() + person.getAge();
+        }));
+        log.info(" 简约的写法 {} ", ageMap2_1.toString());
 
         // 先筛选，再转化成map
         Map<Integer, List<Person>> ageMap3 = persons.stream().filter(p -> p.getAge() >= 18).collect(Collectors.groupingBy(Person::getAge));
@@ -339,53 +342,29 @@ class Order {
         return id;
     }
 }
+
+
+@Getter
+@Setter
 class Person {
     String name;
     int age;
+    String address;
 
     Person(String name, int age) {
         this.name = name;
         this.age = age;
     }
 
-    /**
-     * Getter method for property <tt>name</tt>.
-     * 
-     * @return property value of name
-     */
-    public String getName() {
-        return name;
-    }
-
-    /**
-     * Setter method for property <tt>name</tt>.
-     * 
-     * @param name value to be assigned to property name
-     */
-    public void setName(String name) {
+    Person(String name, int age, String address) {
         this.name = name;
-    }
-
-    /**
-     * Getter method for property <tt>age</tt>.
-     * 
-     * @return property value of age
-     */
-    public int getAge() {
-        return age;
-    }
-
-    /**
-     * Setter method for property <tt>age</tt>.
-     * 
-     * @param age value to be assigned to property age
-     */
-    public void setAge(int age) {
         this.age = age;
+        this.address = address;
     }
+
 
     @Override
     public String toString() {
-        return name + ":" + age;
+        return name + ":" + age + ":" + address;
     }
 }

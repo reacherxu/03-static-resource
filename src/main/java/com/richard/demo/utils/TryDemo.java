@@ -37,5 +37,9 @@ public class TryDemo {
     public static void main(String[] args) {
         log.info("spring version {}, springboot version {}", SpringVersion.getVersion(), SpringBootVersion.getVersion());
         log.info(test1(10));
+
+        String slashs = "/vv///bb";
+        String temps[] = slashs.split("/");
+        log.info("len is {}", temps.length);
     }
 }
