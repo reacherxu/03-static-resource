@@ -5,13 +5,7 @@
 package com.richard.demo.utils;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -24,14 +18,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.BooleanNode;
-import com.fasterxml.jackson.databind.node.DoubleNode;
-import com.fasterxml.jackson.databind.node.IntNode;
-import com.fasterxml.jackson.databind.node.JsonNodeFactory;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.fasterxml.jackson.databind.node.TextNode;
-import com.fasterxml.jackson.databind.node.ValueNode;
+import com.fasterxml.jackson.databind.node.*;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonParser;
 import com.jayway.jsonpath.Configuration;
@@ -519,6 +506,7 @@ public class JsonUtil {
         }
     }
 
+
     protected static String generateJsonPathArgumentFromJson(JsonNode jsonNode, String valueSearched) {
         if (jsonNode.isValueNode() && !jsonNode.asText().equals(valueSearched)) {
             return null;
@@ -717,6 +705,57 @@ public class JsonUtil {
             set.add(serviceId);
         }
         log.info("list size is {}, set size is {}", list.size(), set.size());
+
+    }
+
+    @Test
+    public void testReadJsonArray2() throws IOException {
+        // 1. object mapper
+        ObjectMapper objectMapper = new ObjectMapper();
+        String arrayJson = "[{\n" + "\t\"oldMetadataId\": \"c3e4de4a-4d4c-4f35-a1f1-4e0008dad306\",\n"
+                + "\t\"newMetadataId\": \"c3e4de4a-4d4c-4f35-a1f1-4e0008dad306\",\n"
+                + "\t\"serviceId\": \"83d35f91-bd22-4876-9a35-6fd4be760c30\",\n" + "\t\"status\": null\n" + "}, {\n"
+                + "\t\"oldMetadataId\": \"a04912e2-5e28-42d3-b48e-66cce28674fe\",\n"
+                + "\t\"newMetadataId\": \"a04912e2-5e28-42d3-b48e-66cce28674fe\",\n"
+                + "\t\"serviceId\": \"eb2e05e9-467a-435d-90a5-72163dc4f869\",\n" + "\t\"status\": null\n" + "}, {\n"
+                + "\t\"oldMetadataId\": \"d662a022-989e-4af4-b26b-f0aa246091c0\",\n"
+                + "\t\"newMetadataId\": \"d662a022-989e-4af4-b26b-f0aa246091c0\",\n"
+                + "\t\"serviceId\": \"2a1a51a4-0415-4958-b6cc-3c40804d45a1\",\n" + "\t\"status\": null\n" + "}, {\n"
+                + "\t\"oldMetadataId\": \"0d10e3ea-b196-427e-8c1c-eb9e14d7e80f\",\n"
+                + "\t\"newMetadataId\": \"0d10e3ea-b196-427e-8c1c-eb9e14d7e80f\",\n"
+                + "\t\"serviceId\": \"f2cd519b-d2db-45b8-af52-233429f5c4aa\",\n" + "\t\"status\": null\n" + "}, {\n"
+                + "\t\"oldMetadataId\": \"7063689a-8882-4632-afd9-d883abab310b\",\n"
+                + "\t\"newMetadataId\": \"7063689a-8882-4632-afd9-d883abab310b\",\n"
+                + "\t\"serviceId\": \"3b481012-3957-4367-ae6c-4db7385005c6\",\n" + "\t\"status\": null\n" + "}, {\n"
+                + "\t\"oldMetadataId\": \"8cf6adc4-7e2a-4dd8-9223-300496d296a0\",\n"
+                + "\t\"newMetadataId\": \"8cf6adc4-7e2a-4dd8-9223-300496d296a0\",\n"
+                + "\t\"serviceId\": \"447a2f9a-3e39-478d-a89f-3d949760e97c\",\n" + "\t\"status\": null\n" + "}, {\n"
+                + "\t\"oldMetadataId\": \"b8f4c583-18d6-483a-8808-bcda3d2ccb08\",\n"
+                + "\t\"newMetadataId\": \"b8f4c583-18d6-483a-8808-bcda3d2ccb08\",\n"
+                + "\t\"serviceId\": \"88b3e568-8c10-4802-bf76-dc724d6841e8\",\n" + "\t\"status\": null\n" + "}, {\n"
+                + "\t\"oldMetadataId\": \"3f1a438b-d2f3-4870-a249-313765f99d4f\",\n"
+                + "\t\"newMetadataId\": \"3f1a438b-d2f3-4870-a249-313765f99d4f\",\n"
+                + "\t\"serviceId\": \"2e74d63c-6c92-4183-a91d-0310e65bb30c\",\n" + "\t\"status\": null\n" + "}]";
+        JsonNode jsonNode = objectMapper.readTree(arrayJson);
+        // 如果是一个JsonNode数组，使用jsonNode.elements();读取数组中每个node
+        Iterator<JsonNode> elements = jsonNode.elements();
+        log.info("object mapper parsing array");
+        List<String> list = new ArrayList<>();
+        Set<String> set = new HashSet<>();
+        while (elements.hasNext()) {
+            JsonNode node = elements.next();
+            String serviceId = node.get("serviceId").asText();
+            if (list.contains(serviceId)) {
+                log.info("duplicated service id {}", serviceId);
+            }
+            if (StringUtils.isBlank(node.get("newMetadataId").asText())) {
+                log.error("blank newMetadataId for service {}", serviceId);
+            }
+            list.add(serviceId);
+            set.add(serviceId);
+        }
+        String result = JacksonUtil.writeStr(set);
+        log.info("list size is {}, set size is {},serives are  {}", list.size(), set.size(), result.replace("\"", "\'"));
 
     }
 

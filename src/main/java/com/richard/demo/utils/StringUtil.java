@@ -1,16 +1,18 @@
 package com.richard.demo.utils;
 
-import com.google.common.collect.Lists;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
-import org.junit.Assert;
-import org.junit.Test;
-
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.apache.commons.lang3.StringUtils;
+import org.junit.Assert;
+import org.junit.Test;
+
+import com.google.common.collect.Lists;
+
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class StringUtil {
@@ -46,6 +48,7 @@ public class StringUtil {
         log.info("pe-ms/0b3b82c9-9967-46e5-85f8-60671a2354d9/pe/archive/{date}/{0-24}/tableName".split("/")[4]);
 
     }
+
 
 	@Test
     public void testReplacement() {
