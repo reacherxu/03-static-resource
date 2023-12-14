@@ -1,12 +1,7 @@
 package com.richard.demo.utils;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-
 import org.junit.Test;
 
-import com.github.javaparser.JavaParser;
-import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.PackageDeclaration;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
@@ -35,21 +30,6 @@ public class ManualAST {
         // 打印
         System.out.println(be);
 
-    }
-
-    @Test
-    public void test1() throws FileNotFoundException {
-        FileInputStream in = new FileInputStream("/Users/i350644/Downloads/OrderType.java");
-
-
-        // parse the file
-        CompilationUnit cu = JavaParser.parse(in);
-
-
-        // prints the resulting compilation unit to default system output
-//        System.out.println(cu.toString());
-
-        cu.accept(new MethodVisitor(), null);
     }
 
     private static class MethodVisitor extends VoidVisitorAdapter<Void> {
