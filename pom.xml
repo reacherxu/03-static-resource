@@ -13,15 +13,19 @@
 	<version>0.0.1-SNAPSHOT</version>
 
 	<properties>
-		<java.version>1.8</java.version>
 		<maven-jar-plugin.version>3.0.0</maven-jar-plugin.version>
-		<delight.nashorn.sandbox.version>0.1.14</delight.nashorn.sandbox.version>
+		<!--		<delight.nashorn.sandbox.version>0.4.2</delight.nashorn.sandbox.version>-->
 		<powermock.version>2.0.2</powermock.version>
 		<mockito.version>3.7.7</mockito.version>
 
 	</properties>
 
 	<dependencies>
+		<!--		<dependency>-->
+		<!--			<groupId>org.springframework.experimental.ai</groupId>-->
+		<!--			<artifactId>spring-ai-openai-spring-boot-starter</artifactId>-->
+		<!--			<version>0.7.1-SNAPSHOT</version>-->
+		<!--		</dependency>-->
 		<!--		caffeine-->
 		<dependency>
 			<groupId>com.github.ben-manes.caffeine</groupId>
@@ -156,11 +160,11 @@
 			<artifactId>fastjson</artifactId>
 			<version>1.2.72</version>
 		</dependency>
-		<dependency>
-			<groupId>org.javadelight</groupId>
-			<artifactId>delight-nashorn-sandbox</artifactId>
-			<version>${delight.nashorn.sandbox.version}</version>
-		</dependency>
+		<!--		<dependency>-->
+		<!--			<groupId>org.javadelight</groupId>-->
+		<!--			<artifactId>delight-nashorn-sandbox</artifactId>-->
+		<!--			<version>${delight.nashorn.sandbox.version}</version>-->
+		<!--		</dependency>-->
 		<!-- Actuator -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -249,6 +253,7 @@
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
 			<optional>true</optional>
+			<version>1.18.30</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
