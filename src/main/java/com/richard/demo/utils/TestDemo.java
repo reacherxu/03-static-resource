@@ -4,9 +4,7 @@
  */
 package com.richard.demo.utils;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
 import org.junit.Test;
@@ -97,6 +95,32 @@ public class TestDemo {
             if (isInterested(random.nextInt(10))) {
                 count++;
             }
+        }
+        System.out.printf("Found %d interested values%n", count);
+    }
+
+    @Test
+    public void testSplit() {
+        int count = 301;
+        int split = 100;
+        // prepare data
+        List<Person> persons = new ArrayList<>();
+        for (int i = 0; i < count; i++) {
+            persons.add(new Person("name" + i, i, "address" + i));
+        }
+
+        // split data
+        int groupSize = persons.size() / split + (persons.size() % split == 0 ? 0 : 1);
+        System.out.println("group size is " + groupSize);
+        for (int i = 0; i < groupSize; i++) {
+            List<Person> subList = new ArrayList<>();
+            System.out.println("first element is " + persons.get(i * split).toString());
+            if (i == groupSize - 1) {
+                subList = persons.subList(i * split, persons.size());
+            } else {
+                subList = persons.subList(i * split, (i + 1) * split);
+            }
+            System.out.println(subList.toString() + "\n");
         }
         System.out.printf("Found %d interested values%n", count);
     }

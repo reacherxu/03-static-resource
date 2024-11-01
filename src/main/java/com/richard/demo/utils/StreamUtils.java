@@ -4,20 +4,20 @@
  */
 package com.richard.demo.utils;
 
-import lombok.*;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.junit.Test;
-import org.springframework.beans.BeanUtils;
-import rx.Observable;
-import rx.functions.Func1;
-import rx.schedulers.Schedulers;
-
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.junit.Test;
+
+import lombok.*;
+import lombok.extern.slf4j.Slf4j;
+import rx.Observable;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 /**
  *
@@ -267,13 +267,13 @@ public class StreamUtils {
 
     @Test
     public void testBeanUtils() {
-        Customer sheridan = new Customer("Sheridan");
-        sheridan.setProperty1("pp1");
-        sheridan.addOrder(new Order(1)).addOrder(new Order(2)).addOrder(new Order(3));
-
-        Customer customer2 = new Customer("aa");
-        BeanUtils.copyProperties(sheridan, customer2);
-        System.out.println(customer2);
+        // Customer sheridan = new Customer("Sheridan");
+        // sheridan.setProperty1("pp1");
+        // sheridan.addOrder(new Order(1)).addOrder(new Order(2)).addOrder(new Order(3));
+        //
+        // Customer customer2 = new Customer("aa");
+        // BeanUtils.copyProperties(sheridan, customer2);
+        // System.out.println(customer2);
     }
 
     @Test

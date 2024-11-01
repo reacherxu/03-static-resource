@@ -21,11 +21,11 @@
 	</properties>
 
 	<dependencies>
-		<!--		<dependency>-->
-		<!--			<groupId>org.springframework.experimental.ai</groupId>-->
-		<!--			<artifactId>spring-ai-openai-spring-boot-starter</artifactId>-->
-		<!--			<version>0.7.1-SNAPSHOT</version>-->
-		<!--		</dependency>-->
+		<dependency>
+			<groupId>com.theokanning.openai-gpt3-java</groupId>
+			<artifactId>client</artifactId>
+			<version>0.9.0</version>
+		</dependency>
 		<!--		caffeine-->
 		<dependency>
 			<groupId>com.github.ben-manes.caffeine</groupId>
@@ -188,8 +188,13 @@
 		<dependency>
 			<groupId>io.reactivex</groupId>
 			<artifactId>rxjava</artifactId>
-		</dependency>
 
+		</dependency>
+		<!--		<dependency>-->
+		<!--			<groupId>io.reactivex.rxjava3</groupId>-->
+		<!--			<artifactId>rxjava</artifactId>-->
+		<!--			<version>3.1.9</version>-->
+		<!--		</dependency>-->
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
