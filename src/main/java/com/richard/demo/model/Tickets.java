@@ -12,7 +12,7 @@ import org.slf4j.MDC;
 
 import com.richard.demo.utils.util.MDCUtil;
 
-public  class Tickets<String> implements Callable<String> {
+public class Tickets<String> implements Callable<String> {
     Map<java.lang.String, java.lang.String> copyOfContextMap;
 
     public Tickets(Map<java.lang.String, java.lang.String> copyOfContextMap) {
