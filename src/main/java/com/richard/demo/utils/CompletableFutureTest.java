@@ -1,6 +1,6 @@
 package com.richard.demo.utils;
 
-import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.*;
 
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
@@ -10,6 +10,53 @@ import org.junit.Test;
  * 2. 使用runAsync
  */
 public class CompletableFutureTest {
+    /**
+     * Future 是 Java 提供的一个接口，用于表示异步计算的结果。
+     * 它允许我们在一个线程中提交一个任务，然后在另一个线程中获取任务的执行结果。虽然 Future
+     * 提供了一种简单的方式来进行异步编程，但它的功能有限，不能很好地处理复杂的并发场景
+     */
+    @Test
+    public void testFuture() {
+        ExecutorService executor = Executors.newCachedThreadPool();
+
+        Future<String> futureResult = executor.submit(new Callable<String>() {
+            @Override
+            public String call() throws Exception {
+                Thread.sleep(5000);
+                return "Hello, Future!";
+            }
+        });
+
+        try {
+            String result = futureResult.get();
+            System.out.println(result);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        executor.shutdown();
+    }
+
+    /**
+     * FutureTask 实现了 RunnableFuture 接口，该接口继承了 Runnable 和 Future 接口。
+     * 因此，FutureTask 既可以作为一个任务被提交给 Executor 执行，也可以作为一个 Future 得到任务的执行结果
+     */
+    @Test
+    public void testFutureTask() {
+        FutureTask<String> futureTask = new FutureTask<>(() -> {
+            Thread.sleep(2000);
+            return "Hello, FutureTask!";
+        });
+
+        new Thread(futureTask).start();
+
+        try {
+            String result = futureTask.get();
+            System.out.println(result);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     /**
      * CompletableFuture.supplyAsync()。这个方法需要一个Supplier函数接口，通常用于执行异步计算
