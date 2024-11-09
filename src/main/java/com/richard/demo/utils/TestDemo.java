@@ -15,6 +15,24 @@ import org.junit.Test;
  * @version $Id: TestDemo.java, v 0.1 May 28, 2018 11:00:32 AM richard.xu Exp $
  */
 public class TestDemo {
+    @Test
+    public void test() {
+        Integer i1 = 40;
+        Integer i2 = new Integer(40);
+        System.out.println(i1 == i2);
+
+        String str1 = "hello";
+        String str2 = new String("hello");
+        String str3 = "hello";
+        // 使用 == 比较字符串的引用相等
+        System.out.println(str1 == str2);
+        System.out.println(str1 == str3);
+        // 使用 equals 方法比较字符串的相等
+        System.out.println(str1.equals(str2));
+        System.out.println(str1.equals(str3));
+
+        Object o = new String();
+    }
 
     /*
      * src:源数组；    srcPos:源数组要复制的起始位置

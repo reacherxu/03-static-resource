@@ -27,7 +27,7 @@ public class LongestPalindrome {
     // 给定字符串，寻找其中最长回文串
     @Test
     public void testLongestPalindrome() {
-        String test2 = "abbc";
+        String test2 = "abccccdd";
         System.out.println(longestPalindrome(test2));
     }
 
@@ -89,21 +89,58 @@ public class LongestPalindrome {
     }
 
     // 寻找最长回文串
-    public static String longestPalindrome(String s) {
+    public static int longestPalindrome(String s) {
         if (s == null || s.length() < 1) {
-            return "";
+            return 0;
         }
-        int start = 0, end = 0;
+        // 记录最大回文子串的长度
+        // 一旦 s 非空，必然最大回文子串长度至少为 1
+        int max_length = 0;
+        String tempResult = null;
         for (int i = 0; i < s.length(); i++) {
-            int len1 = expandAroundCenter(s, i, i);
-            int len2 = expandAroundCenter(s, i, i + 1);
-            int len = Math.max(len1, len2);
-            if (len > end - start) {
-                start = i - (len - 1) / 2;
-                end = i + len / 2;
+            // 考察回文串长度是奇数的情况
+            int k1 = expandPalindrome(s, i - 1, i + 1);
+            // 考察回文串长度是偶数的情况
+            int k2 = expandPalindrome(s, i, i + 1);
+
+            // 计算两个情况下的长度
+            int length1 = k1 * 2 + 1;
+            int length2 = k2 * 2;
+
+            // 更新最大值
+            if (length1 > max_length) {
+                max_length = length1;
+                // tempResult = s.substring(i - k1, i + k1 + 1);
+                // System.out.println("奇数的情况" + s.substring(i, i + 1) + " " + tempResult);
+            }
+            if (length2 > max_length) {
+                max_length = length2;
+                // tempResult = s.substring(i - k2 + 1, i + k2 + 1);
+                // System.out.println("偶数的情况" + s.substring(i, i + 1) + " " + tempResult);
             }
         }
-        return s.substring(start, end + 1);
+
+        return max_length;
+
+    }
+
+    // 辅助函数：从长度为 n 的字符串 s 的给定位置左右扩展寻找回文串。
+    // 输入的 left 和 right 是扩展的左右起始位置。
+    // 返回扩展经过的字符数 k .
+    public static int expandPalindrome(String str, int left, int right) {
+        int k = 0;
+        char s[] = str.toCharArray();
+        while (left >= 0 && right < str.length()) {
+            if (s[left] == s[right]) {
+                left--;
+                right++;
+                k++;
+            } else {
+                break;
+            }
+        }
+        System.out.println(str.substring(left + 1, right));
+        return k;
     }
 
     public static int expandAroundCenter(String s, int left, int right) {
