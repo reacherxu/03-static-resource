@@ -17,6 +17,7 @@ import org.junit.Test;
 public class TestDemo {
     @Test
     public void test() {
+        System.out.println(Math.abs(10 - 90));
         Integer i1 = 40;
         Integer i2 = new Integer(40);
         System.out.println(i1 == i2);
