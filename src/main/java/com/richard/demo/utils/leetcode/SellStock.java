@@ -44,4 +44,15 @@ public class SellStock {
         log.info("max profit is {}", maxProfit(prices));
 
     }
+
+    public int maxBalance(int[] prices, int initialBalance) {
+        int maxTopup = Integer.MIN_VALUE;
+        int maxBalance = 0;
+        for (int i = 0; i < prices.length; i++) {
+            // 维护最大充值列表
+            maxTopup = Math.max(maxTopup, prices[i]);
+            maxBalance = Math.max(maxBalance, maxTopup);
+        }
+        return initialBalance + maxTopup;
+    }
 }

@@ -13,7 +13,12 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.junit.Test;
 
-import lombok.*;
+import com.richard.demo.Person;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import rx.Observable;
 import rx.functions.Func1;
@@ -344,27 +349,3 @@ class Order {
 }
 
 
-@Getter
-@Setter
-class Person {
-    String name;
-    int age;
-    String address;
-
-    Person(String name, int age) {
-        this.name = name;
-        this.age = age;
-    }
-
-    Person(String name, int age, String address) {
-        this.name = name;
-        this.age = age;
-        this.address = address;
-    }
-
-
-    @Override
-    public String toString() {
-        return name + ":" + age + ":" + address;
-    }
-}

@@ -2,12 +2,15 @@
  * SAP Inc.
  * Copyright (c) 1972-2018 All Rights Reserved.
  */
-package com.richard.demo.utils;
+package com.richard.demo.test;
 
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
 import org.junit.Test;
+
+import com.richard.demo.Person;
+
 
 /**
  * 
@@ -148,3 +151,4 @@ public class TestDemo {
         return i % 2 == 0;
     }
 }
+
