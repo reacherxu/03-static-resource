@@ -25,6 +25,9 @@ import lombok.extern.slf4j.Slf4j;
  * The closest elements are 10 and 12
  * Input : arr[] = {5, 4, 3, 2}
  * Output : (2, 3), (3, 4), (4, 5)
+ *
+ * 思路 ：排序过后的列表，相邻节点差值一定最小
+ * -> sort-> calculate-> find
  */
 @Slf4j
 public class ClosestPair {

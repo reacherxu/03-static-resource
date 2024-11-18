@@ -2,6 +2,9 @@ package com.richard.demo.utils.leetcode;
 
 import org.junit.Test;
 
+/**
+ * Fibonacci
+ */
 public class ClassicAlgorithm {
     /**
      * 请你输出斐波那契数列的第 n 项。

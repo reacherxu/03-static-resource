@@ -23,6 +23,7 @@ public class IntConvertion {
 
     /**
      * 本质考异或^ 以及位移操作>>>
+     * 异或之后，数1的个数
      * 
      * @param a
      * @param b
@@ -45,6 +46,9 @@ public class IntConvertion {
      * 剑指 offer: 将一个字符串转换成一个整数(实现 Integer.valueOf(string)的功能，
      * 但是 string 不符合数字要求时返回 0)，要求不能使用字符串转换整数的库函数。
      * 数值为 0 或者字符串不是一个合法的数值则返回 0
+     *
+     * 思路 ： 除了符号之外，按位数*10 （'char'-'0' == 真实的位数）
+     * -> 考到了ascii 码和数字之间的转换
      */
     @Test
     public void testStrToInt() {

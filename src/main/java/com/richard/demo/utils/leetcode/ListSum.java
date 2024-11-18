@@ -8,12 +8,17 @@ import com.richard.demo.utils.leetcode.model.ListNode;
 
 public class ListSum {
     /**
-     * 给定两个非空链表来表示两个非负整数。位数按照逆序方式存储，它们的每个节点只存储单个数字。
-     * 将两数相加返回一个新的链表。
+     * 给定两个非空链表来表示两个非负整数。
+     * <li>
+     * 位数按照逆序方式存储，
+     * <li/>
+     * 它们的每个节点只存储单个数字.将两数相加返回一个新的链表。
      * <p>
      * 输入：(2 -> 4 -> 3) + (5 -> 6 -> 4)
      * 输出：7 -> 0 -> 8
      * 原因：342 + 465 = 807
+     *
+     * 考点 ： 遍历列表
      */
     @Test
     public void testAdd() {
@@ -34,6 +39,9 @@ public class ListSum {
         print(result);
     }
 
+    /**
+     * 空间复杂度o(1) 和o（n）的算法
+     */
     @Test
     public void testReverse() {
 
@@ -89,7 +97,10 @@ public class ListSum {
         }
     }
 
-    // no need to get size first
+    /**
+     * 方法1 ： 得到长度，n-k+1 就是倒数第k个
+     * 方法2 ： 不需要事先遍历一遍 => 2个指针同时开始跑
+     */
     @Test
     public void testFindLastKthToTail() {
         ListNode node = createDefaultList();
@@ -121,7 +132,6 @@ public class ListSum {
 
         // 直接计算倒数第k个
         int lastk = count - k + 1;
-        int count2 = 0;
         for (int i = 1; i < lastk; i++) {
             n2 = n2.next;
         }
@@ -189,6 +199,15 @@ public class ListSum {
         System.out.println();
     }
 
+    /**
+     * 思路：逆序则是从个位数开始相加
+     * 按位相加，记录进位 => (要有虚拟表头) 取值->相加求进位当位置上的值->走下一个节点
+     * 注意 ： 最后还有一个进位
+     *
+     * @param l1
+     * @param l2
+     * @return
+     */
     public ListNode add(ListNode l1, ListNode l2) {
         ListNode dummyHead1 = new ListNode(0);
         ListNode head = dummyHead1;

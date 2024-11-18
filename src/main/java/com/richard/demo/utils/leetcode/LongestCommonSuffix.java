@@ -7,6 +7,8 @@ import java.util.Arrays;
  *
  * 编写一个函数来查找字符串数组中的最长公共前缀。
  *
+ * 思路 ：排序后的第一个和最后一个，就是最长的公共前缀
+ *
  */
 public class LongestCommonSuffix {
     public static String replaceSpace(String[] strs) {

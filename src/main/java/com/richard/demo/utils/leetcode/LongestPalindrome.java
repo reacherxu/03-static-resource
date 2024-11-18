@@ -4,9 +4,15 @@ import java.util.HashSet;
 
 import org.junit.Test;
 
+/**
+ * 注意 ： 回文串可以是奇数，也可以是偶数
+ */
 public class LongestPalindrome {
 
-    // 给定字符序列，构造最长回文串的长度
+    // Q1 给定字符序列，构造最长回文串的长度
+    // 思路：回文串强调偶数，则hashset 计数，没有则加入，相同则消掉
+    // 注意 要看奇数的情况
+    // 扩展 ： 也可以判断给定字符序列是否能构成回文
     @Test
     public void testSelfBuiltLongestPalindrome() {
         String s = "abccccdd";
@@ -15,7 +21,8 @@ public class LongestPalindrome {
         System.out.println(selfBuiltLongestPalindrome(s));// 13
     }
 
-    // 判断是否是回文串
+    // Q2判断是否是回文串
+    // 思路： 一前一后2个指针
     @Test
     public void testIsPalindrome() {
         String test1 = "A man, a plan, a canal: Panama";
@@ -24,15 +31,13 @@ public class LongestPalindrome {
         System.out.println(isPalindrome(test1));// false
     }
 
-    // 给定字符串，寻找其中最长回文串
+    // Q3 给定字符串，寻找其中最长回文串
+    // 个人思路 ： 已知有效回文串的算法，找出所有回文，取最大的
+    // 更好的思路 ： 中间向两边发散，回文有
     @Test
     public void testLongestPalindrome() {
         String test2 = "abccccdd";
         System.out.println(longestPalindrome(test2));
-    }
-
-    public static void main(String[] args) {
-
     }
 
     /**
@@ -139,7 +144,6 @@ public class LongestPalindrome {
                 break;
             }
         }
-        System.out.println(str.substring(left + 1, right));
         return k;
     }
 
