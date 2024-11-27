@@ -52,6 +52,115 @@ public class TopK {
 
     }
 
+    @Test
+    public void test1() {
+        String po = "breakfast beach citycenter location metro view staff price";
+        String ne = "not";
+        List<Integer> hotelIds = Lists.newArrayList(1, 2, 1, 1, 2);
+        List<String> reviews = Lists.newArrayList("This hotel has a nice view of the citycenter. The location is perfect.",
+                "The breakfast is ok. Regarding location, it is quite far from citycenter but price is cheap so it is worth.",
+                "Location is excellent, 5 minutes from citycenter. There is also a metro station very close to the hotel.",
+                "They said I couldn't take my dog and there were other guests with dogs! That is not fair.",
+                "Very friendly staff and good cost - benefit ratio. Its location is a bit far from citycenter.");
+        System.out.println("case 1");
+        System.out.println(JacksonUtil.writeStr(awardTopKHotels(po, ne, hotelIds, reviews, 2)));
+        System.out.println("-----------");
+
+    }
+
+    @Test
+    public void test2() {
+        System.out.println("case 2");
+        System.out.println(JacksonUtil.writeStr(awardTopKHotels("BREAKFAST beach CITYCENTER LOCATION metro VIEW STAFF PRICE", "NOT",
+                Lists.newArrayList(7, 6, 7, 7, 6),
+                Lists.newArrayList(
+                        "THIS HOTEL HAS A NICE VIEW of THE CITYCENTER. THE location IS PERFECT. THE BREAKFAST IS OK. REGARDING LOCATION",
+                        " IT IS QUITE FAR FROM citycenter BUT PRICE IS CHEAPvSO IT IS WORTH.",
+                        "LOCATION IS EXCELLENT, 7 MINUTES FROM citycenter. THERE IS ALSO A METRO STATION VERY CLOSE TO THE HOTEL.",
+                        "THEY SAID I COULDN'T TAKE MY DOG AND THERE WERE OTHER GUESTS WITH DOGS! THAT IS not FAIR.",
+                        "VERY FRIENDLY STAFF AND GOOD COST-BENEFIT RATIO. location IS A BIT FAR FROM CITYCENTER."),
+                4)));
+        System.out.println("-----------");
+
+    }
+
+    @Test
+    public void test3() {
+        System.out.println("case 3");
+        System.out.println(JacksonUtil.writeStr(awardTopKHotels("BREAKFAST BEACH CITYCENTER LOCATION METRO VIEW STAFF PRICE", "NOT",
+                Lists.newArrayList(3, 4, 3, 3, 4),
+                Lists.newArrayList("THIS HOTEL HAS A NICE VIEW OF THE CITYCENTER. THE LOCATION IS PERFECT.",
+                        "THE BREAKFAST IS OK. REGARDING LOCATION, IT IS QUITE FAR FROM CITYCENTER BUT PRICE IS CHEAP SO IT IS WORTH.",
+                        "LOCATION IS EXCELLENT, 5 MINUTES FROM CITYCENTER. THERE IS ALSO A METRO STATION VERY CLOSE TO THE HOTEL.",
+                        "THEY SAID I COULDN'T TAKE MY DOG AND THERE WERE OTHER GUESTS WITH DOGS! THAT IS NOT FAIR.",
+                        "VERY FRIENDLY STAFF AND GOOD COST-BENEFIT RATIO. LOCATION IS A BIT FAR FROM CITYCENTER."),
+                4)));
+    }
+
+    public static void main(String[] args) {}
+
+    /**
+     * 给定一个正面关键词字符串 positiveKeywords，一个负面关键词字符串 negativeKeywords，一个酒店ID列表 hotelIds，一个评论列表 reviews 和
+     * 一个整数k。
+     * <p>
+     * 请你返回前 k 个评分最高的酒店ID列表。评分规则如下：
+     * <li>如果评论中包含正面关键词，则评分 +3
+     * <li>如果评论中包含负面关键词，则评分 -1
+     * <li>评分为评分之和
+     * <li>如果评分相同，酒店ID较小的排在前面
+     * <li>如果评分相同且酒店ID也相同，则保持原有顺序
+     */
+    public static List<Integer> awardTopKHotels(String positiveKeywords, String negativeKeywords, List<Integer> hotelIds,
+            List<String> reviews, int k) {
+        // 1.validation
+        if (hotelIds.size() != reviews.size()) {
+            return new ArrayList<>();
+        }
+
+        System.out.println("positiveKeywords: " + positiveKeywords);
+        System.out.println("negativeKeywords: " + negativeKeywords);
+        System.out.println("hotelIds: " + hotelIds);
+        for (int i = 0; i < reviews.size(); i++) {
+            System.out.println(reviews.get(i));
+        }
+
+        System.out.println("k: " + k);
+
+        // 2.get positive and negative keywords and count the score
+        Set<String> positive = new HashSet<>(Arrays.asList(positiveKeywords.toLowerCase().split("\\s")));
+        Set<String> negative = new HashSet<>(Arrays.asList(negativeKeywords.toLowerCase().split("\\s")));
+        Map<Integer, Integer> hotelToScore = new HashMap<>();
+        for (int i = 0; i < hotelIds.size(); i++) {
+            String review = reviews.get(i);
+            String[] words = review.split("\\s");
+            // ignore case and ignore punctuation
+            int positiveCount = 0;
+            int negativeCount = 0;
+            for (String word : words) {
+                word = word.replaceAll("[^a-zA-Z]", "");
+                if (positive.contains(word.toLowerCase())) {
+                    positiveCount++;
+                }
+                if (negative.contains(word.toLowerCase())) {
+                    negativeCount++;
+                }
+            }
+            int score = positiveCount * 3 - negativeCount * -1;
+            hotelToScore.put(hotelIds.get(i), hotelToScore.getOrDefault(hotelIds.get(i), 0) + score);
+        }
+
+        // get top k
+        List<Integer> keys = new ArrayList<>(hotelToScore.keySet());
+        Collections.sort(keys, new Comparator<Integer>() {
+            @Override
+            public int compare(Integer o1, Integer o2) {
+                return hotelToScore.get(o1) == hotelToScore.get(o2) ? o1.compareTo(o2) : hotelToScore.get(o2) - hotelToScore.get(o1);
+            }
+        });
+        System.out.println("keys: " + JacksonUtil.writeStr(hotelToScore));
+        return k > keys.size() ? keys : keys.subList(0, k);
+    }
+
     // 考点1 map 计数map.getOrDefault
     // 考点1 List的compare 方法 ： Collections.sort(list,new Comparator<String>)
     private List<String> topkWords(String[] words, int k) {
@@ -106,18 +215,18 @@ public class TopK {
     }
 
 
-    public static void main(String[] args) {
-        Order o1 = new Order("phone", new Date(1609459200000L));
-        Order o2 = new Order("mouse", new Date(1609459200000L));
-        Order o3 = new Order("phone", new Date(1609459200000L));
-        Order o4 = new Order("phone", new Date(1609459200000L));
-        Order o5 = new Order("water", new Date(1609459200000L));
-        Order o6 = new Order("water", new Date(1609459200000L));
-        TopK solution = new TopK();
-        solution.addCartList(Lists.newArrayList(o1, o2, o3, o4, o5, o6));
-        List<String> topk = solution.topkOrder(solution.getOrderList(), 2);
-        System.out.println(topk);
-    }
+    // public static void main(String[] args) {
+    // Order o1 = new Order("phone", new Date(1609459200000L));
+    // Order o2 = new Order("mouse", new Date(1609459200000L));
+    // Order o3 = new Order("phone", new Date(1609459200000L));
+    // Order o4 = new Order("phone", new Date(1609459200000L));
+    // Order o5 = new Order("water", new Date(1609459200000L));
+    // Order o6 = new Order("water", new Date(1609459200000L));
+    // TopK solution = new TopK();
+    // solution.addCartList(Lists.newArrayList(o1, o2, o3, o4, o5, o6));
+    // List<String> topk = solution.topkOrder(solution.getOrderList(), 2);
+    // System.out.println(topk);
+    // }
 
     @Test
     public void testOrder1() {

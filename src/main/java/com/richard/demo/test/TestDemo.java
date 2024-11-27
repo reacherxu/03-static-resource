@@ -9,6 +9,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 import org.junit.Test;
 
+import com.google.common.collect.Lists;
 import com.richard.demo.Person;
 
 
@@ -18,6 +19,78 @@ import com.richard.demo.Person;
  * @version $Id: TestDemo.java, v 0.1 May 28, 2018 11:00:32 AM richard.xu Exp $
  */
 public class TestDemo {
+
+    public static void fizzBuzz(int n) {
+        // Write your code here
+        for (int i = 1; i <= n; i++) {
+            if (isMuti3(i) == true && isMuti5(i) == true) {
+                System.out.println("FizzBuzz");
+            } else if (isMuti3(i) == true && isMuti5(i) == false) {
+                System.out.println("Fizz");
+            } else if (isMuti3(i) == false && isMuti5(i) == true) {
+                System.out.println("Buzz");
+            } else {
+                System.out.println(i);
+            }
+        }
+
+    }
+
+    public static void main(String[] args) {
+        // fizzBuzz(15);
+        // System.out.println(isMuti3(3));
+        List<Integer> num = Lists.newArrayList(2);
+        System.out.println("value is " + minSum(num, 1));;
+    }
+
+    // TODO time exceed
+    /**
+     * @param num: the list of numbers
+     * @param k: divided by 2 k times
+     * @return: the minimum sum
+     */
+    public static int minSum(List<Integer> num, int k) {
+        // Write your code here
+        int sum = 0;
+        for (int i = 0; i < k; i++) {
+            Collections.sort(num);
+            int max = num.get(num.size() - 1);
+            int minimizeValue = max % 2 == 0 ? num.set(num.size() - 1, max / 2) : num.set(num.size() - 1, max / 2 + 1);
+        }
+        for (int i = 0; i < num.size(); i++) {
+            sum += num.get(i);
+        }
+        return sum;
+    }
+
+    // passed
+    /**
+     * @param numbers: a list of integers
+     * @return: return the number of non-unique integers
+     */
+    public static int countDuplicate(List<Integer> numbers) {
+        // Write your code here
+        Map<Integer, Integer> map = new HashMap<>();
+        for (int i = 0; i < numbers.size(); i++) {
+            map.put(numbers.get(i), map.getOrDefault(numbers.get(i), 0) + 1);
+        }
+        int count = 0;
+        for (Map.Entry<Integer, Integer> entry : map.entrySet()) {
+            if (entry.getValue() > 1) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    public static boolean isMuti3(int n) {
+        return n % 3 == 0;
+    }
+
+    public static boolean isMuti5(int n) {
+        return n % 5 == 0;
+    }
+
     @Test
     public void test() {
         System.out.println(Math.abs(10 - 90));
