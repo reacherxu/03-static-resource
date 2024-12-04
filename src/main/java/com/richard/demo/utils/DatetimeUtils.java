@@ -46,6 +46,13 @@ public class DatetimeUtils {
         log.info("fromVersion index is {}, toVersion index is {} ", versions.indexOf(fromVersion), versions.indexOf(toVersion));
         List<String> subVersions = versions.subList(versions.indexOf(fromVersion), versions.indexOf(toVersion) + 1);
         log.info(subVersions.toString());
+
+        log.info("result is {}", "2024-11-14 11:13:23".compareTo("2024-11-15 09:13:23"));
+
+        Date date = new Date();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");// 设置格式
+        Calendar calendar = Calendar.getInstance(); // 创建Calendar 的实例
+        calendar.setTime(date);
     }
 
     /**
@@ -80,9 +87,16 @@ public class DatetimeUtils {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         Date date1 = sdf.parse("2009-12-31");
         Date date2 = sdf.parse("2019-01-31");
-
         System.out.println("date1 : " + sdf.format(date1));
         System.out.println("date2 : " + sdf.format(date2));
+
+
+        SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date date3 = sdf1.parse("2024-11-14 11:13:23");
+        Date date4 = sdf1.parse("2024-11-15 09:13:23");
+        System.out.println("date3 : " + sdf1.format(date3));
+        System.out.println("date4 : " + sdf1.format(date4));
+        System.out.println("result : " + date3.after(date4));
 
         Calendar cal1 = Calendar.getInstance();
         Calendar cal2 = Calendar.getInstance();

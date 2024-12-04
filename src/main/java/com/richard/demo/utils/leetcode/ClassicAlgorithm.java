@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.junit.Test;
+import org.springframework.util.StopWatch;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -23,9 +24,24 @@ public class ClassicAlgorithm {
      */
     @Test
     public void testFibonacci() {
+
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start("任务1");
+        // 递归方法会导致重复计算，效率低
         for (int j = 1; j < 10; j++) {
             System.out.print(fibonacci(j) + " ");
         }
+        System.out.println();
+
+        stopWatch.stop();
+        stopWatch.start("任务2");
+        // 动态规划,空间换时间
+        for (int j = 1; j < 10; j++) {
+            System.out.print(fibonacci2(j) + " ");
+        }
+        System.out.println();
+        stopWatch.stop();
+        System.out.println(stopWatch.prettyPrint());
 
         // 变态跳台阶问题:
         // 一只青蛙一次可以跳上 1 级台阶，也可以跳上 2 级……它也可以跳上 n 级。求该青蛙跳上一个 n 级的台阶总共有多少种跳法
@@ -38,6 +54,7 @@ public class ClassicAlgorithm {
 
     }
 
+    // 递归方法会导致重复计算，效率低
     private int fibonacci(int j) {
         if (j == 0) {
             return 0;
@@ -47,6 +64,26 @@ public class ClassicAlgorithm {
         }
         return fibonacci(j - 1) + fibonacci(j - 2);
 
+    }
+
+    // 动态规划,空间换时间
+    //
+    private int fibonacci2(int j) {
+        if (j == 0) {
+            return 0;
+        }
+        if (j == 1) {
+            return 1;
+        }
+
+        // note : 多开一位，考虑起始位置
+        int result[] = new int[j + 1];
+        result[0] = 0;
+        result[1] = 1;
+        for (int i = 2; i <= j; i++) {
+            result[i] = result[i - 1] + result[i - 2];
+        }
+        return result[j];
     }
 
     // Q2 : n个空格填数字，每个空格上的数字是规定的字符 ----------------------------------------------------------

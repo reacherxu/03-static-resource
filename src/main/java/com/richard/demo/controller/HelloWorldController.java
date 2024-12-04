@@ -8,10 +8,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.FutureTask;
+import java.util.concurrent.*;
 
 import javax.validation.Valid;
 
@@ -81,6 +78,21 @@ public class HelloWorldController {
             entry.getValue().queryOrderList();
         }
         return map;
+    }
+
+    // 用于创建一个已经处于完成状态的CompletableFuture
+    @GetMapping(value = "/completableFuture")
+    @ResponseBody
+    public CompletableFuture<String> completableFuture() {
+        try {
+            log.info("completableFuture start");
+            Thread.sleep(5000);
+            log.info("completableFuture end");
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        log.info("completableFuture return");
+        return CompletableFuture.completedFuture("Success");
     }
 
     @PostMapping(value = "/validate")

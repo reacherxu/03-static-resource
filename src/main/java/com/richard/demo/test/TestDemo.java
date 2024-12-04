@@ -12,12 +12,15 @@ import org.junit.Test;
 import com.google.common.collect.Lists;
 import com.richard.demo.Person;
 
+import lombok.extern.slf4j.Slf4j;
+
 
 /**
  * 
  * @author richard.xu03@sap.com
  * @version $Id: TestDemo.java, v 0.1 May 28, 2018 11:00:32 AM richard.xu Exp $
  */
+@Slf4j
 public class TestDemo {
 
     public static void fizzBuzz(int n) {
@@ -93,10 +96,12 @@ public class TestDemo {
 
     @Test
     public void test() {
-        System.out.println(Math.abs(10 - 90));
         Integer i1 = 40;
         Integer i2 = new Integer(40);
-        System.out.println(i1 == i2);
+        log.info("结果是 {}", i1 == i2);
+        Integer i3 = 40;
+        log.info("利用了包装类型的缓存机制 结果是 {}", i3 == i1);
+
 
         String str1 = "hello";
         String str2 = new String("hello");
