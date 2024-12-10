@@ -20,6 +20,8 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,6 +33,7 @@ import com.richard.demo.services.RetryService;
 import com.richard.demo.services.aspect.Login;
 import com.richard.demo.services.impl.OrderInfoDaoAImpl;
 import com.richard.demo.services.impl.OrderInfoServiceImpl;
+import com.richard.demo.services.impl.Validators;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.LoggerContext;
@@ -52,6 +55,9 @@ public class HelloWorldController {
 
     @Autowired
     private Map<String, OrderInfoDao> multiServiceMap;
+
+    @Autowired
+    private Validators validators;
 
     /**
      * http://localhost:8080/hello
@@ -78,6 +84,13 @@ public class HelloWorldController {
             entry.getValue().queryOrderList();
         }
         return map;
+    }
+
+    @GetMapping(value = "/listInjection")
+    @ResponseBody
+    public ResponseEntity<Void> testListInjection() {
+        validators.validate("richard.xu03@sap.com", "12345", "richard");
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     // 用于创建一个已经处于完成状态的CompletableFuture
