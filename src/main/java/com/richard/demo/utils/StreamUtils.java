@@ -20,9 +20,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
-import rx.Observable;
-import rx.functions.Func1;
-import rx.schedulers.Schedulers;
+//import io.reactivex.rxjava3.functions.Func1;
+import io.reactivex.rxjava3.schedulers.Schedulers;
+import io.reactivex.rxjava3.core.Observable;
 
 /**
  *
@@ -51,25 +51,25 @@ public class StreamUtils {
 
         // stream 自定义函数的练习
         // 自定义函数
-        List<Double> list2 = Observable.from(new Integer[] {1, 2, 3, 4, 5, 6}).filter(new Func1<Integer, Boolean>() {
-            @Override
-            public Boolean call(Integer num) {
-                return num % 2 == 1;
-            }
-        }).map(new Func1<Integer, Double>() {
-            @Override
-            public Double call(Integer num) {
-                return Math.sqrt(num);
-            }
-        }).toList().toBlocking().single();
-        System.out.println("list2 是" + list2);
+//        List<Double> list2 = Observable.fromArray(new Integer[] {1, 2, 3, 4, 5, 6}).filter(new Func1<Integer, Boolean>() {
+//            @Override
+//            public Boolean call(Integer num) {
+//                return num % 2 == 1;
+//            }
+//        }).map(new Func1<Integer, Double>() {
+//            @Override
+//            public Double call(Integer num) {
+//                return Math.sqrt(num);
+//            }
+//        }).toList().toBlocking().single();
+//        System.out.println("list2 是" + list2);
 
         // lambda 的简易写法
-        List<Double> list3 = Observable.from(new Integer[] {1, 2, 3, 4, 5, 6}).filter(num -> {
+        List<Double> list3 = Observable.fromArray(new Integer[] {1, 2, 3, 4, 5, 6}).filter(num -> {
             return num % 2 == 1;
         }).map(num -> {
             return Math.sqrt(num);
-        }).toList().toBlocking().single();
+        }).toList().blockingGet();
         System.out.println("list3 是" + list3);
 
         List<Integer> copyIntegers = numbers.stream().map(i -> i * i).collect(Collectors.toList());
@@ -131,7 +131,7 @@ public class StreamUtils {
     public void testObservable() {
         List<Person> persons = Arrays.asList(new Person("Max", 18), new Person("Maximam", 180), new Person("Peter", 23),
                 new Person("Pamela", 23), new Person("David", 12));
-        Observable.from(persons).flatMap(person -> Observable.fromCallable(() -> {
+        Observable.fromIterable(persons).flatMap(person -> Observable.fromCallable(() -> {
             if (person.getAge() > 100) {
                 throw new RuntimeException("age is too big");
             }
@@ -224,28 +224,28 @@ public class StreamUtils {
                 Arrays.asList(new Person("Max", 18), new Person("Peter", 23), new Person("Pamela", 23), new Person("David", 12));
         Map<String, Person> personMap = new HashMap<>();
         // test reduce
-        Observable.from(persons).flatMap(person -> Observable.fromCallable(() -> {
+        Observable.fromIterable(persons).flatMap(person -> Observable.fromCallable(() -> {
             return ImmutablePair.of(person.getName(), person);
         }).subscribeOn(Schedulers.io()).onErrorResumeNext(response -> Observable.<ImmutablePair<String, Person>>empty()))
                 .reduce(personMap, (map, pair) -> {
                     map.put(pair.getLeft(), pair.getRight());
                     return map;
-                }).toList().toBlocking().single();
+                }).blockingGet();
         System.out.println("person map  is " + personMap.toString());
 
         // test map, 注意 key 不要重复，否则会覆盖
         // 收集原始Observable发射的所有数据项到一个Map（默认是HashMap）然后发射这个Map。
         // 你可以提供一个用于生成Map的Key的函数，还可以提供一个函数转换数据项到Map存储的值（默认数据项本身就是值）
-        Map<Integer, Person> ageMap = Observable.from(persons).filter(person -> Objects.nonNull(person)).toMap(p -> {
+        Map<Integer, Person> ageMap = Observable.fromIterable(persons).filter(person -> Objects.nonNull(person)).toMap(p -> {
             return p.getAge();
-        }).toBlocking().single();
+        }).blockingGet();
         System.out.println("person age map is " + ageMap.toString());
 
         // test toMultimap, value 是 Collection
         List<Person> persons2 = Arrays.asList(new Person("Max", 18), new Person("Max", 28), new Person("Peter", 23),
                 new Person("Pamela", 23), new Person("David", 12));
         Map<Integer, Collection<Person>> ageMultiMap =
-                Observable.from(persons2).filter(person -> Objects.nonNull(person)).toMultimap(Person::getAge).toBlocking().single();
+                Observable.fromIterable(persons2).filter(person -> Objects.nonNull(person)).toMultimap(Person::getAge).blockingGet();
         System.out.println("person age multimap is " + ageMultiMap.toString());
 
 
@@ -303,14 +303,14 @@ public class StreamUtils {
         // 1.方法参数 Function 产生一个输出值流；
         // 2.生成的元素被“展平”为一个新的流。
         // 这样解决了两层for循环的代码
-        Observable.from(customers).flatMap(new Func1<Customer, Observable<Order>>() {
-            @Override
-            public Observable<Order> call(Customer customer) {
-                return Observable.from(customer.getOrders());
-            }
-        }).forEach(order -> {
-            System.out.println(order.getId());
-        });
+//        Observable.fromIterable(customers).flatMap(new Fuction3<Customer, Observable<Order>>() {
+//            @Override
+//            public Observable<Order> call(Customer customer) {
+//                return Observable.fromIterable(customer.getOrders());
+//            }
+//        }).forEach(order -> {
+//            System.out.println(order.getId());
+//        });
     }
 }
 

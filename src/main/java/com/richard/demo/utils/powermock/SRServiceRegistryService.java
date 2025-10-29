@@ -24,7 +24,7 @@ public class SRServiceRegistryService {
 
     public ServiceDetailDto getServiceById(String id, String metadataId, String token) {
         log.info("[getServiceById] Get service by id {} and metadataId {}", id, metadataId);
-        HttpHeaders headers = SRRestTemplateService.buildHttpHeaders(null, token);
+        HttpHeaders headers = SRRestTemplateService.buildHttpHeaders( token);
         HttpEntity<String> entity = new HttpEntity<>(headers);
 
         UriComponentsBuilder builder = UriComponentsBuilder

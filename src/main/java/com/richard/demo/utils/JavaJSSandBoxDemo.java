@@ -6,8 +6,8 @@
 //
 // import java.util.concurrent.ExecutorService;
 // import java.util.concurrent.Executors;
-// import javax.script.Bindings;
-// import javax.script.ScriptException;
+// import jakarta.script.Bindings;
+// import jakarta.script.ScriptException;
 // import com.alibaba.fastjson.JSONObject;
 // import delight.nashornsandbox.NashornSandbox;
 // import delight.nashornsandbox.NashornSandboxes;

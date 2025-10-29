@@ -4,8 +4,8 @@ package com.richard.demo.utils.rx;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
-import rx.Observable;
-import rx.schedulers.Schedulers;
+import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 
 
 public class SampleMulti {
@@ -46,19 +46,19 @@ public class SampleMulti {
 
         // if error, the item will be replaced with dummy one , here is -1 , so 5 items returned
         // including a dummy one (-1).
-        List<Integer> sucessList = Observable.from(inputList)
+        List<Integer> sucessList = Observable.fromIterable(inputList)
                 .flatMap(value -> getNumberedObservable(value).subscribeOn(Schedulers.io())
                         .doOnError(e -> System.out.println("failed " + value + " " + e)).onErrorReturn(e -> -1))
-                .toList().toBlocking().single();
+                .toList().blockingGet();
 
         System.out.println(sucessList);
 
         // if error , the item will be ignored , so only 4 items returned.
-        List<Integer> sucessList2 = Observable.from(inputList)
+        List<Integer> sucessList2 = Observable.fromIterable(inputList)
                 .flatMap(value -> getNumberedObservable(value).subscribeOn(Schedulers.io())
                         .doOnError(e -> System.out.println("failed " + value + " " + e))
                         .onErrorResumeNext(response -> Observable.<Integer>empty()))
-                .toList().toBlocking().single();
+                .toList().blockingGet();
 
         System.out.println(sucessList2);
     }

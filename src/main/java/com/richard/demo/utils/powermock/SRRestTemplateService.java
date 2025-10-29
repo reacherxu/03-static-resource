@@ -1,7 +1,5 @@
 package com.richard.demo.utils.powermock;
 
-import javax.print.attribute.standard.Destination;
-
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -32,7 +30,7 @@ public class SRRestTemplateService {
         }
     }
 
-    public HttpHeaders buildHttpHeaders(Destination destination, String userToken) {
+    public HttpHeaders buildHttpHeaders(String userToken) {
         HttpHeaders headers = new HttpHeaders();
 
         return headers;

@@ -8,22 +8,22 @@ package com.richard.demo.config;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.slf4j.MDC;
 import org.springframework.lang.Nullable;
 import org.springframework.util.StringUtils;
-import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
+import org.springframework.web.servlet.HandlerInterceptor;
 
-public class RequestInterceptor extends HandlerInterceptorAdapter {
+public class RequestInterceptor implements HandlerInterceptor {
 
     private static final List<String> paramSet = Arrays.asList("traceId");
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         this.setParam(request);
-        return super.preHandle(request, response, handler);
+        return true;
     }
 
     @Override

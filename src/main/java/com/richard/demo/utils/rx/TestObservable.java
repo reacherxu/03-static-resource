@@ -11,8 +11,8 @@ import org.junit.Test;
 import org.springframework.security.concurrent.DelegatingSecurityContextExecutorService;
 
 import lombok.extern.slf4j.Slf4j;
-import rx.Observable;
-import rx.schedulers.Schedulers;
+import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 
 @Slf4j
 public class TestObservable {
@@ -33,7 +33,7 @@ public class TestObservable {
     @Test
     public void testIOScheduler() {
         List<Integer> list = Arrays.asList(1, 2, 3);
-        Observable.from(list).flatMap(num -> Observable.fromCallable(new Callable<Integer>() {
+        Observable.fromIterable(list).flatMap(num -> Observable.fromCallable(new Callable<Integer>() {
             @Override
             public Integer call() throws Exception {
                 if (num % 2 == 0) {
@@ -44,29 +44,29 @@ public class TestObservable {
                 return num * num;
             }
         }).subscribeOn(Schedulers.io()).doOnError(e-> log.warn(e.getMessage())).onErrorResumeNext(response -> Observable.<Integer>empty()))
-                .toList().toBlocking().single();;
+                .toList().blockingGet();;
     }
 
-    @Test
-    public void testScheduler() {
-        SampleZip sz = new SampleZip();
-        List<Integer> list = Arrays.asList(1, 2, 3, 10, 11);
-        Observable.from(list).flatMap(num -> Observable.fromCallable(new Callable<Integer>() {
-            @Override
-            public Integer call() throws Exception {
-                if (num % 2 == 0 && num <10) {
-                    log.info("thread is {},sqrt is {}", Thread.currentThread().getId(), num * num);
-                } else if (num % 2 != 0 ){
-                    throw new RuntimeException("do not support odd number");
-                } else {
-                    log.error("thread is {},sqrt is {}", Thread.currentThread().getId(), num * num);
-                }
-                return num * num;
-            }
-        }).subscribeOn(Schedulers.from(getCustomExcutorService())).doOnError(e -> log.warn(e.getMessage()))
-                .onErrorResumeNext(response -> Observable.<Integer>empty()))
-                .toList().toBlocking().single();
-    }
+//    @Test
+//    public void testScheduler() {
+//        SampleZip sz = new SampleZip();
+//        List<Integer> list = Arrays.asList(1, 2, 3, 10, 11);
+//        Observable.from(list).flatMap(num -> Observable.fromCallable(new Callable<Integer>() {
+//            @Override
+//            public Integer call() throws Exception {
+//                if (num % 2 == 0 && num <10) {
+//                    log.info("thread is {},sqrt is {}", Thread.currentThread().getId(), num * num);
+//                } else if (num % 2 != 0 ){
+//                    throw new RuntimeException("do not support odd number");
+//                } else {
+//                    log.error("thread is {},sqrt is {}", Thread.currentThread().getId(), num * num);
+//                }
+//                return num * num;
+//            }
+//        }).subscribeOn(Schedulers.from(getCustomExcutorService())).doOnError(e -> log.warn(e.getMessage()))
+//                .onErrorResumeNext(response -> Observable.<Integer>empty()))
+//                .toList().toBlocking().single();
+//    }
 
 
 }

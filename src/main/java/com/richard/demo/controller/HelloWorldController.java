@@ -10,7 +10,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.*;
 
-import javax.validation.Valid;
+import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.schedulers.Schedulers;
+import jakarta.validation.Valid;
 
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
@@ -39,8 +41,6 @@ import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.LoggerContext;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import rx.Observable;
-import rx.schedulers.Schedulers;
 
 /**
  *
@@ -204,7 +204,7 @@ public class HelloWorldController {
     @PostMapping(value = "/current")
     @ResponseBody
     public List<Integer> current(@RequestParam List<Integer> numbers) {
-        List<Integer> result = Observable.from(numbers).flatMap(num -> Observable.fromCallable(new Callable<Integer>() {
+        List<Integer> result = Observable.fromIterable(numbers).flatMap(num -> Observable.fromCallable(new Callable<Integer>() {
             @Override
             public Integer call() throws Exception {
                 // if not using DelegatingSecurityContextExecutorService, then can print it
@@ -222,7 +222,7 @@ public class HelloWorldController {
                 return num * num;
             }
         }).subscribeOn(Schedulers.from(executorService)).doOnError(e -> log.warn(e.getMessage()))
-                .onErrorResumeNext(response -> Observable.<Integer>empty())).toList().toBlocking().single();
+                .onErrorResumeNext(response -> Observable.<Integer>empty())).toList().blockingGet();
         return result;
     }
 
