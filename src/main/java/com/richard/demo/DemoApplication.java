@@ -35,8 +35,8 @@ public class DemoApplication implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-//        String sql = "SELECT count(*)  FROM USR";
-//        int count = template.queryForObject(sql, Integer.class);
-//        log.info("user count is " + count);
+        String sql = "SELECT count(*)  FROM USR";
+        int count = template.queryForObject(sql, Integer.class);
+        log.info("user count is " + count);
     }
 }
