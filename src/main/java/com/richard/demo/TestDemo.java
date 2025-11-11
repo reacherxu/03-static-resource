@@ -2,7 +2,7 @@
  * SAP Inc.
  * Copyright (c) 1972-2018 All Rights Reserved.
  */
-package com.richard.demo.test;
+package com.richard.demo;
 
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
@@ -10,7 +10,6 @@ import java.util.concurrent.ThreadLocalRandom;
 import org.junit.Test;
 
 import com.google.common.collect.Lists;
-import com.richard.demo.Person;
 
 import lombok.extern.slf4j.Slf4j;
 

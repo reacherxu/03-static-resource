@@ -10,10 +10,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.*;
 
-import io.reactivex.rxjava3.core.Observable;
-import io.reactivex.rxjava3.schedulers.Schedulers;
-import jakarta.validation.Valid;
-
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,12 +29,16 @@ import com.richard.demo.model.User;
 import com.richard.demo.services.OrderInfoDao;
 import com.richard.demo.services.RetryService;
 import com.richard.demo.services.aspect.Login;
+import com.richard.demo.services.impl.CircuitBreakerService;
 import com.richard.demo.services.impl.OrderInfoDaoAImpl;
 import com.richard.demo.services.impl.OrderInfoServiceImpl;
 import com.richard.demo.services.impl.Validators;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.LoggerContext;
+import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.schedulers.Schedulers;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -58,6 +58,9 @@ public class HelloWorldController {
 
     @Autowired
     private Validators validators;
+
+    @Autowired
+    private CircuitBreakerService circuitBreakerService;
 
     /**
      * http://localhost:8080/hello
@@ -114,6 +117,14 @@ public class HelloWorldController {
 
         return user;
     }
+
+    // test circuit breaker
+    @PostMapping(value = "/circuitBreaker")
+    @ResponseBody
+    public Integer circuitBreaker(Integer i) {
+        return circuitBreakerService.circuitBreakerProcess(i);
+    }
+
 
     @Autowired
     private ApplicationContext applicationContext;
