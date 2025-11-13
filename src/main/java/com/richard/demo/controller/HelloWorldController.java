@@ -27,6 +27,7 @@ import com.richard.demo.enums.OrderType;
 import com.richard.demo.model.Tickets;
 import com.richard.demo.model.User;
 import com.richard.demo.services.OrderInfoDao;
+import com.richard.demo.services.RemoteService;
 import com.richard.demo.services.RetryService;
 import com.richard.demo.services.aspect.Login;
 import com.richard.demo.services.impl.CircuitBreakerService;
@@ -36,6 +37,7 @@ import com.richard.demo.services.impl.Validators;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.LoggerContext;
+import io.github.resilience4j.ratelimiter.RateLimiter;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import jakarta.validation.Valid;
@@ -61,6 +63,13 @@ public class HelloWorldController {
 
     @Autowired
     private CircuitBreakerService circuitBreakerService;
+
+    @Autowired
+    @Qualifier("customRateLimiter")
+    private RateLimiter rateLimiter;
+
+    @Autowired
+    private RemoteService remoteService;
 
     /**
      * http://localhost:8080/hello
@@ -124,6 +133,19 @@ public class HelloWorldController {
     public Integer circuitBreaker(Integer i) {
         return circuitBreakerService.circuitBreakerProcess(i);
     }
+
+    @PostMapping(value = "/ratelimiter")
+    @ResponseBody
+    public Integer ratelimiter(Integer i) {
+        log.info("available calls：" + rateLimiter.getMetrics().getAvailablePermissions());
+        if (rateLimiter.acquirePermission()) {
+            return remoteService.process(i);
+        } else {
+            log.warn("rate limiter limit exceeded");
+            return -1;
+        }
+    }
+
 
 
     @Autowired
