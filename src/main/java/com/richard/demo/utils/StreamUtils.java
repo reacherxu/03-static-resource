@@ -15,14 +15,13 @@ import org.junit.Test;
 
 import com.richard.demo.Person;
 
+import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
-//import io.reactivex.rxjava3.functions.Func1;
-import io.reactivex.rxjava3.schedulers.Schedulers;
-import io.reactivex.rxjava3.core.Observable;
 
 /**
  *

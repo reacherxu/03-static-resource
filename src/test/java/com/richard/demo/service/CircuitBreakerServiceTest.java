@@ -1,4 +1,4 @@
-package com.richard.demo;
+package com.richard.demo.service;
 
 import static org.mockito.Mockito.*;
 

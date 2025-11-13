@@ -2,13 +2,9 @@
  * SAP Inc.
  * Copyright (c) 1972-2019 All Rights Reserved.
  */
-package com.richard.demo.utils;
+package com.richard.demo.util;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.junit.Test;

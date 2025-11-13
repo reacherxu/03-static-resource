@@ -1,7 +1,8 @@
-package com.richard.demo.utils;
+package com.richard.demo.util;
 
 import org.junit.Test;
 
+import com.richard.demo.utils.JacksonUtil;
 import com.richard.demo.utils.pojos.TestClass1;
 import com.richard.demo.utils.pojos.TestClass1Sub;
 import com.richard.demo.utils.pojos.TestClass2;
