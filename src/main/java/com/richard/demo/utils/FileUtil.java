@@ -175,9 +175,10 @@ public class FileUtil {
         //
         // System.out.println(new String(byte1, Charset.defaultCharset()));
         //
-        // readFromFile(FileUtil.getTempLoaction() + "test2.txt");
+        String content = readFromFile(FileUtil.getTempLoaction() + "a.txt");
+        System.out.println(content);
 
-        readFileByLines(FileUtil.getTempLoaction() + "tenant failure.txt");
+        // readFileByLines(FileUtil.getTempLoaction() + "tenant failure.txt");
     }
 
     /**

@@ -41,8 +41,12 @@ public class TestDemo {
     public static void main(String[] args) {
         // fizzBuzz(15);
         // System.out.println(isMuti3(3));
-        List<Integer> num = Lists.newArrayList(2);
-        System.out.println("value is " + minSum(num, 1));;
+        // List<Integer> num = Lists.newArrayList(2);
+        // System.out.println("value is " + minSum(num, 1));
+
+        List<Integer> numbers = Arrays.asList(1, 2, 3, 2, 4, 5, 5, 6);
+        int result = countDuplicate(numbers);
+        System.out.println("Number of non-unique integers: " + result); // Output: 2
     }
 
     // TODO time exceed
@@ -84,6 +88,25 @@ public class TestDemo {
         }
         return count;
     }
+
+    @Test
+    public void testGetOrDefault() {
+        Map<String, List<String>> map = new HashMap<>();
+        map.put("fruits", Lists.newArrayList("apple", "banana", "orange"));
+        map.put("vegetables", Lists.newArrayList("carrot", "broccoli"));
+        map.put("water", Lists.newArrayList());
+        map.put("item4", Lists.newArrayList());
+
+        List<String> dairyProducts = map.getOrDefault("dairy", new ArrayList<>());
+        System.out.println("Dairy Products: " + dairyProducts); // Output: Dairy Products: []
+
+        // merge contents
+        map.getOrDefault("water", new ArrayList<>()).addAll(Lists.newArrayList("milk"));
+        System.out.println("Map: " + map);
+        map.getOrDefault("fruits", new ArrayList<>()).addAll(Arrays.asList("cherry"));
+        System.out.println("Map: " + map);
+    }
+
 
     public static boolean isMuti3(int n) {
         return n % 3 == 0;
